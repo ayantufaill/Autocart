@@ -3,6 +3,7 @@ import { Box, Grid, IconButton, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import UserProfileCard from "../UserProfileCard/UserProfileCard";
 import ImageGallery from "../ImageGallery/ImageGallery";
+import { useRouter } from "next/router";
 
 const styles = {
   container: {
@@ -55,6 +56,8 @@ const styles = {
 };
 
 const Homepage = () => {
+  const router = useRouter();
+  const { pathname } = router;
   const stats = [
     { amount: "120", icon: "/images/likes.svg" },
     { amount: "2k", icon: "/images/view-icon.svg" },
@@ -83,7 +86,12 @@ const Homepage = () => {
               gap: 2,
             }}
           >
-            <Typography sx={styles.carTitle}>BMW 520 M Sport</Typography>
+            <Typography
+              sx={{ ...styles.carTitle, cursor: "pointer" }}
+              onClick={() => router.push("/ads/preview-ad")}
+            >
+              BMW 520 M Sport
+            </Typography>
             <Stack direction="row" sx={{ gap: 2 }}>
               {stats.map((item, index) => (
                 <Typography sx={styles.statText} key={index}>

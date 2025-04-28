@@ -1,53 +1,189 @@
-import { Stack, Button } from "@mui/material";
+import { Stack, Button, Typography } from "@mui/material";
 import Image from "next/image";
 import React from "react";
+import { useRouter } from "next/router";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 const styles = {
   container: {
-    bgcolor: "#DCFCE7",
+    bgcolor: "#F9FAFB",
     p: { xs: "10px 20px", md: "20px 40px" },
     flexDirection: "row",
-    alignItems: "start",
+    alignItems: "center",
     justifyContent: "space-between",
   },
   logo: {
     width: "120px",
     height: "auto",
-  },
-  button: {
-    color: "#9CA3AF",
-    borderColor: "transparent",
+    cursor: "pointer",
   },
 };
 
 const Header = () => {
+  const router = useRouter();
+  const { pathname } = router;
+
+  const isHomePage = pathname === "/";
+  const isPlaceAdPage = pathname === "/ads/place-ad";
+  const isPreviewAdPage = pathname === "/ads/preview-ad";
+
+  const handleLogoClick = () => {
+    router.push("/");
+  };
+
+  const handlePlaceAdClick = () => {
+    router.push("/ads/place-ad");
+  };
+
+  const handleBack = () => {
+    router.back();
+  };
+
+  const handleReset = () => {
+    console.log("Reset clicked");
+    // Reset logic
+  };
+
+  const handlePublishAd = () => {
+    console.log("Publish Ad clicked");
+  };
+
   return (
     <Stack sx={styles.container}>
-      <Image
-        src={"/images/autocart-logo.svg"}
-        alt="autocart-logo"
-        width={140}
-        height={140}
-        style={styles.logo}
-      />
+      {isHomePage && (
+        <>
+          <Image
+            src="/images/autocart-logo.svg"
+            alt="autocart-logo"
+            width={140}
+            height={140}
+            style={styles.logo}
+            onClick={handleLogoClick}
+          />
+          <Stack sx={{ flexDirection: "row", gap: 2 }}>
+            <Button
+              onClick={handlePlaceAdClick}
+              sx={{
+                bgcolor: "#07B007",
+                color: "#FFF",
+                fontSize: { xs: "12px", md: "14px" },
+              }}
+            >
+              Place Ad +
+            </Button>
+            <Image
+              src="/images/filter-icon.svg"
+              alt="filter"
+              width={24}
+              height={24}
+            />
+          </Stack>
+        </>
+      )}
 
-      <Stack sx={{ flexDirection: "row", gap: 2 }}>
-        <Button
-          sx={{
-            bgcolor: "#07B007",
-            color: "#FFF",
-            fontSize: { xs: "12px", md: "14px" },
-          }}
-        >
-          Place Ad +
-        </Button>
-        <Image
-          src="/images/filter-icon.svg"
-          alt="filter"
-          width={24}
-          height={24}
-        />
-      </Stack>
+      {isPlaceAdPage && (
+        <>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+          >
+            <Button
+              onClick={handleBack}
+              sx={{ minWidth: "auto", color: "#111827" }}
+            >
+              <ArrowBackIosNewIcon fontSize="small" />
+            </Button>
+
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: "18px",
+                color: "#111827",
+              }}
+            >
+              Place Ad
+            </Typography>
+
+            <Button
+              onClick={handleReset}
+              sx={{
+                minWidth: "auto",
+                color: "#B91C1C",
+                fontSize: "14px",
+                fontWeight: 500,
+                textTransform: "none",
+              }}
+            >
+              Reset
+            </Button>
+          </Stack>
+        </>
+      )}
+
+      {isPreviewAdPage && (
+        <>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+          >
+            <Button
+              onClick={handleBack}
+              sx={{ minWidth: "auto", color: "#111827" }}
+            >
+              <ArrowBackIosNewIcon fontSize="small" />
+            </Button>
+
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: "18px",
+                color: "#111827",
+              }}
+            >
+              Preview Ad
+            </Typography>
+
+            <Button
+              onClick={handlePublishAd}
+              sx={{
+                bgcolor: "#07B007",
+                color: "#FFF",
+                fontSize: "14px",
+                fontWeight: 600,
+                padding: "6px 16px",
+                borderRadius: "8px",
+                textTransform: "none",
+                "&:hover": {
+                  bgcolor: "#43A047",
+                },
+              }}
+            >
+              Publish Ad
+            </Button>
+          </Stack>
+        </>
+      )}
+
+      {/* Other Pages */}
+      {!isHomePage && !isPlaceAdPage && !isPreviewAdPage && (
+        <>
+          <Stack sx={{ flexDirection: "row", gap: 2 }}>
+            <Button
+              sx={{
+                bgcolor: "#07B007",
+                color: "#FFF",
+                fontSize: { xs: "12px", md: "14px" },
+              }}
+            >
+              Dashboard
+            </Button>
+          </Stack>
+        </>
+      )}
     </Stack>
   );
 };
