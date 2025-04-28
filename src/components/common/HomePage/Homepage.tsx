@@ -1,8 +1,8 @@
-import React from 'react'
-import { Box, Grid, IconButton, ImageList, ImageListItem, Stack, Typography } from "@mui/material";
-import Image from 'next/image';
-import UserProfileCard from '../UserProfileCard/UserProfileCard';
-import ImageGallery from '../ImageGallery/ImageGallery';
+import React from "react";
+import { Box, Grid, IconButton, Stack, Typography } from "@mui/material";
+import Image from "next/image";
+import UserProfileCard from "../UserProfileCard/UserProfileCard";
+import ImageGallery from "../ImageGallery/ImageGallery";
 
 const styles = {
   container: {
@@ -75,30 +75,70 @@ const Homepage = () => {
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>
-          <Box sx={{ display: "flex", justifyContent: { xs: "space-between", md: "flex-start" }, alignItems: "center", gap: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: { xs: "space-between", md: "flex-start" },
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
             <Typography sx={styles.carTitle}>BMW 520 M Sport</Typography>
             <Stack direction="row" sx={{ gap: 2 }}>
               {stats.map((item, index) => (
                 <Typography sx={styles.statText} key={index}>
-                  <Image src={item.icon} alt={item.icon} width={18} height={18} />
+                  <Image
+                    src={item.icon}
+                    alt={item.icon}
+                    width={18}
+                    height={18}
+                  />
                   {item.amount}
                 </Typography>
               ))}
             </Stack>
           </Box>
           <Typography sx={styles.locationText}>
-            <Image src='/images/location.svg' alt="location" width={20} height={20} />
+            <Image
+              src="/images/location.svg"
+              alt="location"
+              width={20}
+              height={20}
+            />
             2614 Sweetwood Drive, Arvada, CO 80002
           </Typography>
-          <Stack sx={{ alignItems: "center", flexDirection: "row", gap: { xs: 2 }, my: 2 }}>
+          <Stack
+            sx={{
+              alignItems: "center",
+              flexDirection: "row",
+              gap: { xs: 2 },
+              my: 2,
+            }}
+          >
             <Typography sx={styles.carPrice}>$20,000</Typography>
-            <Typography sx={{ fontSize: "14px", color: "#9CA3AF", whiteSpace: "nowrap" }}>From $430/mo</Typography>
-            {actions.map((action, index) => <IconButton key={index} size='small' sx={{ bgcolor: action.color, borderRadius: 1 }}>
-              <Image src={action.icon} alt={action.alt} width={24} height={24} />
-            </IconButton>)}
+            <Typography
+              sx={{ fontSize: "14px", color: "#9CA3AF", whiteSpace: "nowrap" }}
+            >
+              From $430/mo
+            </Typography>
+            {actions.map((action, index) => (
+              <IconButton
+                key={index}
+                size="small"
+                sx={{ bgcolor: action.color, borderRadius: 1 }}
+              >
+                <Image
+                  src={action.icon}
+                  alt={action.alt}
+                  width={24}
+                  height={24}
+                />
+              </IconButton>
+            ))}
           </Stack>
           <Typography sx={styles.carDescription}>
-            Lorem ipsum dolor sit amet consectetur. Ullamcorper imperdiet fermentum mattis ut blandit mattis pretium magna.
+            Lorem ipsum dolor sit amet consectetur. Ullamcorper imperdiet
+            fermentum mattis ut blandit mattis pretium magna.
           </Typography>
         </Grid>
       </Grid>
@@ -109,6 +149,6 @@ const Homepage = () => {
       </Grid> */}
     </Box>
   );
-}
+};
 
 export default Homepage;
