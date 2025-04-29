@@ -30,9 +30,18 @@ const Header = () => {
   const handleLogoClick = () => {
     router.push("/");
   };
-
   const handlePlaceAdClick = () => {
-    router.push("/ads/place-ad");
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.log("No token found", token);
+        router.push("/authentication/sign-in");
+      } else {
+        console.log("Token found", token);
+        router.push("/ads/place-ad");
+      }
+    }
   };
 
   const handleBack = () => {

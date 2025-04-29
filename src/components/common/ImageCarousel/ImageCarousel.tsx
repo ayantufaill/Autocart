@@ -1,22 +1,19 @@
 import { Box } from "@mui/material";
 import Image from "next/image";
 import React from "react";
-import Slider, { Settings } from "react-slick"; // 👉 Import correct type
+import Slider, { Settings } from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 export default function ImageCarousel() {
   const settings: Settings = {
-    // 👉 Use const + correct type
     dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: false,
-    appendDots: (
-      dots: React.ReactNode // 👉 Instead of any, use React.ReactNode
-    ) => (
+    appendDots: (dots: React.ReactNode) => (
       <Box
         sx={{
           position: "absolute",
@@ -58,7 +55,7 @@ export default function ImageCarousel() {
               }}
             >
               <Image
-                src="/images/car-image2.jpeg"
+                src="/images/dp.png"
                 alt={`car-${index}`}
                 fill
                 style={{ objectFit: "cover" }}
