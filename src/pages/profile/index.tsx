@@ -113,16 +113,16 @@ const Profile: React.FC<ProfileProps> = ({ edit = false }) => {
                 .unwrap()
                 .then(userData => {
                     const [firstName, lastName] = userData?.name?.split(" ");
-                    setFormData({
-                        ...formData,
+                    setFormData(prev => ({
+                        ...prev,
                         email: userData?.email,
                         firstName: firstName,
                         lastName: lastName,
                         address: userData?.address
-                    })
+                    }))
                 });
         }
-    }, [dispatch])
+    }, [dispatch]);
 
     return (
         loading ? <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "70vh" }}>
