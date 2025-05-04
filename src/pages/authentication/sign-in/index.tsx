@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { loginUserThunk } from "@/redux/slices/authSlice";
+import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -28,14 +29,14 @@ export default function LoginPage() {
   const handleTogglePassword = () => setShowPassword(!showPassword);
   const handleLogin = () => {
     dispatch(loginUserThunk({ email, password }))
-      .unwrap()
-      .then((res: any) => {
-        console.log("Login Success:", res);
-        router.push("/");
-      })
-      .catch((err: any) => {
-        console.error("Login Error:", err);
-      });
+    // .unwrap()
+    // .then((res: any) => {
+    //   console.log("Login Success:", res);
+    //   router.push("/");
+    // })
+    // .catch((err: any) => {
+    //   console.error("Login Error:", err);
+    // });
   };
 
   return (
@@ -58,10 +59,17 @@ export default function LoginPage() {
           gap={1}
           mb={4}
         >
-          <img
+          {/* <img
             src="/Images/logo.png"
             alt="Autocart Logo"
             style={{ height: 60, width: "auto" }}
+          /> */}
+          <Image
+            src={"/images/logo.png"}
+            alt="Autocart-logo"
+            width={60}
+            height={60}
+            style={{ width: "auto" }}
           />
           <Typography variant="h6" fontWeight="bold" color="#15803D">
             AUTOCART

@@ -21,12 +21,13 @@ import {
   resetAuthState,
   setAuthEmail,
 } from "@/redux/slices/authSlice";
+import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const { loading, success, error, message } = useAppSelector(
+  const { loading, success, error } = useAppSelector(
     (state: RootState) => state.auth
   );
 
@@ -73,7 +74,7 @@ export default function LoginPage() {
         dispatch(resetAuthState());
       }, 2000);
     }
-  }, [success, router, dispatch]);
+  }, [success, router, dispatch, formData.email]);
 
   return (
     <Box
@@ -95,10 +96,17 @@ export default function LoginPage() {
           gap={1}
           mb={4}
         >
-          <img
-            src="/Images/Header/logo.png"
+          {/* <img
+            src="/Images/logo.png"
             alt="Autocart Logo"
             style={{ height: 60, width: "auto" }}
+          /> */}
+          <Image
+            src={"/images/logo.png"}
+            alt="Autocart-logo"
+            width={60}
+            height={60}
+            style={{ width: "auto" }}
           />
           <Typography variant="h6" fontWeight="bold" color="#15803D">
             AUTOCART

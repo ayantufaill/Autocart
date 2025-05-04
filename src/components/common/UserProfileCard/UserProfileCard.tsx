@@ -31,24 +31,29 @@ const styles = {
     },
 };
 
-const UserProfileCard = () => {
+interface UserProfileCardProps {
+    username: string;
+    role: string;
+}
+
+const UserProfileCard: React.FC<UserProfileCardProps> = ({ username, role }) => {
     return (
         <Stack sx={styles.userInfo}>
             <Stack direction="row" alignItems="center" gap={2}>
                 <Image
                     src={"/images/user-image.avif"}
                     alt="user-avatar"
-                    width={50}
-                    height={40}
+                    width={43}
+                    height={43}
                     style={styles.userAvatar}
                 />
                 <Stack>
-                    <Typography sx={styles.userName}>Frances Swann</Typography>
+                    <Typography sx={styles.userName}>{username}</Typography>
                     <Typography sx={styles.userTimestamp}>12 mins ago</Typography>
                 </Stack>
             </Stack>
             <Button disableTouchRipple sx={styles.tradeButton}>
-                Trade Seller
+                {role.split("_").join(" ")}
             </Button>
         </Stack>
     )

@@ -1,3 +1,7 @@
+import UploadImage from "@/components/common/UploadImage/UploadImage";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { postAdThunk, postImagesThunk } from "@/redux/slices/adsSlice";
+import { PostAdPayload } from "@/types/type";
 import {
   Box,
   Button,
@@ -13,21 +17,68 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
+export interface FormData {
+  category: string;
+  phone: string;
+  location: string;
+  currency: string;
+  price: string;
+  description: string;
+  itemName: string;
+  status: string;
+  adType: string;
+  licenseNumber: string;
+  mileage: string;
+  mileageUnit: string;
+  motStatus: string;
+  commercialMake: string;
+  commercialModel: string;
+  adImages: File[];
+}
+
 const VehicleForm = () => {
+  const { loading, adImages } = useAppSelector(state => state.ads);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const generateAdPayload = (): PostAdPayload => {
+    return {
+      "categoryId": "e6841936-a788-45c9-af1b-5c18b4ff31a8",
+      "uploadImagesForAd": adImages,
+      "uploadImagesForStory":
+        [
+          "https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjEwMTMtcC0wMDE5ZC0wMS1rc2k4YjVqbi5qcGc.jpg",
+          "https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3"
+        ],
+      "vehicleLicenseNumber": formData.licenseNumber || "ABC-123",
+      "itemName": formData.itemName || "Honda City",
+      "status": formData.status || "ACTIVE",
+      "condition": "NEW", // change to dynamic
+      "adType": formData.adType || "SELLER",
+      "phoneNumber": formData.phone,
+      "location": formData.location || "London, UK",
+      "price": Number(formData.price) || 500,
+      "priceCurrency": formData.currency || "EURO",
+      "descriptions": formData.description || "Brand new Honda City",
+      "commercialModel": formData.commercialModel || "Transit", // change to dynamic
+      "commercialsMake": formData.commercialMake || "Ford", // change to dynamic
+      "mileageParameter": "KM", // change to dynamic
+      "mileage": 12000, // change to dynamic
+      "loadCapacity": 1500, // change to dynamic
+      "yearOfProduction": 2024, // change to dynamic
+      "engineSize": 1.4, // change to dynamic
+    }
+  }
+
   const vehicleCategories = [
     { label: "Used Cars", value: "cars" },
     { label: "New Cars", value: "usedCars" },
   ];
 
-  const imagesArray = [
-    { src: "/images/car-image.avif" },
-    { src: "/images/car-image.avif" },
-    { src: "/images/car-image.avif" },
-  ];
-
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     category: "",
     phone: "",
     location: "",
@@ -43,6 +94,7 @@ const VehicleForm = () => {
     motStatus: "",
     commercialMake: "",
     commercialModel: "",
+    adImages: []
   });
 
   const handleChange = (
@@ -54,6 +106,17 @@ const VehicleForm = () => {
   const handleSelectChange = (e: SelectChangeEvent) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const handlePublish = () => {
+    dispatch(postImagesThunk(formData.adImages))
+      .unwrap()
+      .then(() => {
+        const adPayload = generateAdPayload();
+        dispatch(postAdThunk(adPayload))
+          .unwrap()
+          .then(() => router.push("/"))
+      })
+  }
 
   return (
     <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2, py: 4 }}>
@@ -135,37 +198,14 @@ const VehicleForm = () => {
                   Select Status
                 </span>
               </MenuItem>
-              <MenuItem value="new">Active</MenuItem>
-              <MenuItem value="used">Pending</MenuItem>
-              <MenuItem value="damaged">Rejected</MenuItem>
+              <MenuItem value="ACTIVE">ACTIVE</MenuItem>
+              <MenuItem value="PENDING">PENDING</MenuItem>
+              <MenuItem value="REJECTED">REJECTED</MenuItem>
+              <MenuItem value="EXPIRED">EXPIRED</MenuItem>
+              <MenuItem value="NEW">NEW</MenuItem>
+              <MenuItem value="USED">USED</MenuItem>
             </Select>
           </FormControl>
-        </Stack>
-      )}
-
-      {formData.category === "commercialMake" && (
-        <Stack spacing={1}>
-          <Typography>Van & Light Commercials Make</Typography>
-          <TextField
-            label="Write Van & Light Commercials Make"
-            name="commercial-make"
-            value={formData.phone}
-            onChange={handleChange}
-            fullWidth
-          />
-        </Stack>
-      )}
-
-      {formData.category === "commercialModel" && (
-        <Stack spacing={1}>
-          <Typography>Van & Light Commercials Model</Typography>
-          <TextField
-            label="Write Van & Light Commercials Model"
-            name="commercial-model"
-            value={formData.phone}
-            onChange={handleChange}
-            fullWidth
-          />
         </Stack>
       )}
 
@@ -185,13 +225,14 @@ const VehicleForm = () => {
                   Select Ad Type
                 </span>
               </MenuItem>
-              <MenuItem value="forSale">For Sale</MenuItem>
-              <MenuItem value="wanted">Wanted</MenuItem>
+              <MenuItem value="SELLER">SELLER</MenuItem>
+              <MenuItem value="WANTED">WANTED</MenuItem>
             </Select>
           </FormControl>
         </Stack>
       )}
 
+      {/* 
       {formData.category === "motorbikes" && (
         <Stack spacing={1}>
           <Typography>Mileage</Typography>
@@ -243,41 +284,30 @@ const VehicleForm = () => {
           </FormControl>
         </Stack>
       )}
+      */}
 
       <Stack spacing={1}>
         <Typography sx={{ color: "#1F2937" }}>Upload Images</Typography>
         <Typography variant="body2" sx={{ color: "#9CA3AF" }}>
           You can upload up to 20 images
         </Typography>
-        <ImageList cols={4} gap={8} sx={{ mt: 2 }}>
-          <ImageListItem
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              border: "1px solid #9CA3AF",
-              borderRadius: 1,
-            }}
-          >
-            <Image
-              src="/images/upload.svg"
-              alt="upload image"
-              width={20}
-              height={20}
-            />
-          </ImageListItem>
-          {imagesArray.map((item, index) => (
-            <ImageListItem sx={{ width: "85px", height: "85px" }} key={index}>
+
+        <ImageList cols={4} gap={8} sx={{ mt: 2, minHeight: "85px" }}>
+
+          <UploadImage formData={formData} setFormData={setFormData} />
+          {formData.adImages && formData.adImages.map((item, index) => (
+            <ImageListItem sx={{ width: "80px", height: "90px" }} key={index}>
               <Image
-                src={item.src}
+                src={URL.createObjectURL(item)}
                 alt={`car-image-${index}`}
                 width={100}
                 height={100}
                 style={{
-                  width: "100%",
+                  maxWidth: "100%",
                   height: "auto",
                   borderRadius: 6,
                   objectFit: "cover",
+                  maxHeight: "90px",
                 }}
               />
             </ImageListItem>
@@ -376,10 +406,8 @@ const VehicleForm = () => {
               onChange={handleSelectChange}
               label="Currency"
             >
-              <MenuItem value="USD">$ USD</MenuItem>
-              <MenuItem value="PKR">₨ PKR</MenuItem>
-              <MenuItem value="EUR">€ EUR</MenuItem>
-              <MenuItem value="INR">₹ INR</MenuItem>
+              <MenuItem value="POUND">£ POUND</MenuItem>
+              <MenuItem value="EURO">€ EURO</MenuItem>
             </Select>
           </FormControl>
           <TextField
@@ -430,6 +458,8 @@ const VehicleForm = () => {
       </Box>
 
       <Button
+        onClick={handlePublish}
+        disabled={loading ? true : false}
         variant="contained"
         sx={{
           height: "48px",
@@ -442,7 +472,9 @@ const VehicleForm = () => {
         Publish Ad
       </Button>
       <Button
+        onClick={() => router.push("/ads/preview-ad")}
         variant="outlined"
+        disabled={loading ? true : false}
         sx={{
           height: "48px",
           color: "#07B007",
@@ -452,7 +484,7 @@ const VehicleForm = () => {
       >
         Preview Ad
       </Button>
-    </Box>
+    </Box >
   );
 };
 

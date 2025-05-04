@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect} from "react";
 import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
@@ -13,7 +13,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const hideHeaderRoutes = [
     "/authentication/sign-in",
     "/authentication/sign-up",
-  ];
+  ]
+
   const hideHeader = hideHeaderRoutes.includes(router.pathname);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     if (!token && isProtected) {
       router.replace("/authentication/sign-in");
     }
-  }, [router.pathname]);
+  }, [router]);
 
   return (
     <Provider store={store}>

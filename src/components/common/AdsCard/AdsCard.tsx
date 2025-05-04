@@ -1,87 +1,46 @@
-import { Badge, Card, CardContent, CardMedia, IconButton, Stack, Typography } from "@mui/material";
-import Image from "next/image";
+import { Ad } from "@/types/type";
+import { Card, CardContent, CardMedia, Typography } from "@mui/material";
+import { useRouter } from "next/router";
 import React from "react"
 
 const styles = {
-    amountBadge: {
-        bgcolor: "rgba(0, 0, 0, 0.35)",
-        color: "#FFF",
-        height: "30px",
-        width: "30px",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: "50%"
-    },
-    statsStack: {
-        mt: 1,
-        gap: 2,
-    },
-    statText: {
-        fontSize: "16px",
-        color: "#9CA3AF",
-        display: "flex",
-        gap: 1,
-        my: 1,
-    },
-    topOverlayActions: {
-        position: "absolute",
-        top: 3,
-        width: "100%",
-        justifyContent: "space-between",
-        px: 2,
-        py: 1,
+    wrapper: {
+        maxWidth: 315,
+        mx: { xs: "auto", sm: 0 },
+        ":hover": {
+            boxShadow: 5,
+            cursor: "pointer"
+        }
     }
 }
 
 interface AdsCardProps {
-    adData: {
-        title: string,
-        price: string,
-        image: string,
-        badgeCount: number,
-        likes: string;
-        views: string;
-        shares: string;
-    }
+    adData: Ad
 }
 
 const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
-    const stats = [
-        { amount: adData.likes, icon: "/images/likes.svg" },
-        { amount: adData.views, icon: "/images/view-icon.svg" },
-        { amount: adData.shares, icon: "/images/share-icon.svg" },
-    ];
+    const router = useRouter();
+    const handleRouteChange = () => router.push(`/ads/preview-ad/${adData?.id}`);
 
     return (
-        <Card sx={{ maxWidth: 315, position: "relative" }}>
+        <Card onClick={handleRouteChange} sx={styles.wrapper}>
             <CardMedia
-                sx={{ height: 160 }}
-                image={adData.image}
+                sx={{ height: 160, objectFit: "cover", backgroundPosition: "center" }}
+                image={adData.uploadImagesForAd[0] || "/images/car-sale-1.webp"}
                 title="car-image"
             />
             <CardContent>
-                <Typography gutterBottom variant="h6" color="#07B007">
-                    {adData.title}
+                <Typography variant="h6" color="#233d7b">
+                    {adData?.itemName}
                 </Typography>
-                <Typography variant="body2" color='#9CA3AF'>
+                <Typography variant="body1" fontWeight={500} color='#07B007' my={.5}>
+                    {adData?.priceCurrency === "EURO" ? "€" : "£"}
                     {adData.price}
                 </Typography>
-                <Stack direction="row" sx={styles.statsStack}>
-                    {stats.map((item, index) => (
-                        <Typography sx={styles.statText} key={index}>
-                            <Image src={item.icon} alt={item.icon} width={18} height={18} />
-                            {item.amount}
-                        </Typography>
-                    ))}
-                </Stack>
+                <Typography variant="body2" color='#9CA3AF'>
+                    {adData?.location}
+                </Typography>
             </CardContent>
-            <Stack direction="row" sx={styles.topOverlayActions}>
-                <IconButton disableTouchRipple sx={{ p: 0, }}>
-                    <Image src={"/images/edit.svg"} alt="edit-icon" width={24} height={24} />
-                </IconButton>
-                <Badge sx={styles.amountBadge}>{adData.badgeCount}</Badge>
-            </Stack>
         </Card>
     )
 }

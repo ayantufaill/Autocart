@@ -9,7 +9,7 @@ export const registerUserApi = async (data: registerUser) => {
 export const loginUserApi = async (data: loginUser) => {
   const response = await api.post("auth/login", data);
   localStorage.setItem("token", response?.data.data?.access_token);
-
+  localStorage.setItem("id", response?.data.data?.id);
   return response.data;
 };
 

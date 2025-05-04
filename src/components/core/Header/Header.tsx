@@ -3,6 +3,7 @@ import Image from "next/image";
 import React from "react";
 import { useRouter } from "next/router";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import EditIcon from '@mui/icons-material/Edit';
 
 const styles = {
   container: {
@@ -26,6 +27,8 @@ const Header = () => {
   const isHomePage = pathname === "/";
   const isPlaceAdPage = pathname === "/ads/place-ad";
   const isPreviewAdPage = pathname === "/ads/preview-ad";
+  const isProfilePage = pathname === "/profile"
+  const previewPostedAd = pathname !== "/ads/preview-ad" && pathname.includes("/ads/preview-ad");
 
   const handleLogoClick = () => {
     router.push("/");
@@ -47,6 +50,10 @@ const Header = () => {
   const handleBack = () => {
     router.back();
   };
+
+  const handleEdit = () => {
+    router.push("/profile/edit")
+  }
 
   const handleReset = () => {
     console.log("Reset clicked");
@@ -177,11 +184,75 @@ const Header = () => {
         </>
       )}
 
+      {
+        isProfilePage && <>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+          >
+            <Button
+              onClick={handleBack}
+              sx={{ minWidth: "auto", color: "#111827" }}
+            >
+              <ArrowBackIosNewIcon fontSize="small" />
+            </Button>
+
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: "18px",
+                color: "#111827",
+              }}
+            >
+              My Profile
+            </Typography>
+
+            <Button
+              onClick={handleEdit}
+              sx={{ minWidth: "auto", color: "#1F2937" }}
+            >
+              <EditIcon fontSize="small" />
+            </Button>
+          </Stack>
+        </>
+      }
+
+      {
+        previewPostedAd && <>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            width="65%"
+          >
+            <Button
+              onClick={handleBack}
+              sx={{ minWidth: "auto", color: "#111827" }}
+            >
+              <ArrowBackIosNewIcon fontSize="small" />
+            </Button>
+
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: "18px",
+                color: "#111827",
+              }}
+            >
+              Preview Ad
+            </Typography>
+          </Stack>
+        </>
+      }
+
       {/* Other Pages */}
-      {!isHomePage && !isPlaceAdPage && !isPreviewAdPage && (
+      {!isHomePage && !isPlaceAdPage && !isPreviewAdPage && !isProfilePage && !previewPostedAd && (
         <>
           <Stack sx={{ flexDirection: "row", gap: 2 }}>
             <Button
+              onClick={() => router.push("/")}
               sx={{
                 bgcolor: "#07B007",
                 color: "#FFF",

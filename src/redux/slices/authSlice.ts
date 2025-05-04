@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { loginUserApi, registerUserApi, verifyUserApi } from "../api/authApi";
+import { ResolveError } from "./adsSlice";
+import { registerUser } from "@/types/type";
 
 const capitalizeName = (name: string) => {
   return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
@@ -25,13 +27,13 @@ const initialState: AuthState = {
 
 export const registerUserThunk = createAsyncThunk(
   "auth/register",
-  async (payload: any, { rejectWithValue }) => {
+  async (payload: registerUser, { rejectWithValue }) => {
     try {
       const response = await registerUserApi(payload);
       return response.data;
-    } catch (err: any) {
+    } catch (err: unknown) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to register."
+        ResolveError(err) || "Failed to register."
       );
     }
   }
@@ -44,9 +46,9 @@ export const verifyUserThunk = createAsyncThunk(
       const response = await verifyUserApi(payload);
       localStorage.setItem("token", response.data.token);
       return response.data;
-    } catch (err: any) {
+    } catch (err: unknown) {
       return rejectWithValue(
-        err.response?.data?.message || "OTP verification failed."
+        ResolveError(err) || "OTP verification failed."
       );
     }
   }
@@ -58,8 +60,8 @@ export const loginUserThunk = createAsyncThunk(
     try {
       const response = await loginUserApi(payload);
       return response;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Login failed.");
+    } catch (err: unknown) {
+      return rejectWithValue(ResolveError(err) || "Login failed.");
     }
   }
 );

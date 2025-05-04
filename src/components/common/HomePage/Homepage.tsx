@@ -1,17 +1,16 @@
-import React from "react";
-import { Box, Grid, IconButton, Stack, Typography } from "@mui/material";
-import Image from "next/image";
-import UserProfileCard from "../UserProfileCard/UserProfileCard";
-import ImageGallery from "../ImageGallery/ImageGallery";
-import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { Box, CircularProgress, InputAdornment, TextField } from "@mui/material";
+import Grid from '@mui/material/Grid';
+import { fetchAdsThunk, fetchSearchAdsThunk } from "@/redux/slices/adsSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { Search } from "@mui/icons-material";
+import AdsCard from "../AdsCard/AdsCard";
 
 const styles = {
   container: {
     padding: { xs: "20px", sm: "25px", md: "30px", lg: "40px" },
   },
-  gridContainer: {
-    py: 4,
-  },
+  gridContainer: { py: 4, },
   imageContainer: {
     display: "flex",
     gap: 2,
@@ -56,105 +55,58 @@ const styles = {
 };
 
 const Homepage = () => {
-  const router = useRouter();
-  const { pathname } = router;
-  const stats = [
-    { amount: "120", icon: "/images/likes.svg" },
-    { amount: "2k", icon: "/images/view-icon.svg" },
-    { amount: "2k", icon: "/images/share-icon.svg" },
-  ];
-  const actions = [
-    { icon: "/images/call-icon.svg", alt: "call", color: "#EFF6FF" },
-    { icon: "/images/message.svg", alt: "message", color: "#F0FDFA" },
-    { icon: "/images/notification.svg", alt: "notification", color: "#FEF2F2" },
-  ];
+  const [filteredAds, setFilteredAds] = useState("");
+  const dispatch = useAppDispatch();
+  const { ads, loading } = useAppSelector(state => state.ads);
+
+  useEffect(() => {
+    if (filteredAds) {
+      dispatch(fetchSearchAdsThunk({ search: filteredAds }))
+    }
+    else {
+      dispatch(fetchAdsThunk());
+    }
+  }, [dispatch, filteredAds]);
 
   return (
     <Box sx={styles.container}>
-      <UserProfileCard />
-      <Grid container sx={styles.gridContainer} spacing={5}>
-        <Grid size={{ xs: 12, md: 6 }} sx={styles.imageContainer}>
-          <ImageGallery />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6 }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: { xs: "space-between", md: "flex-start" },
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
-            <Typography
-              sx={{ ...styles.carTitle, cursor: "pointer" }}
-              onClick={() => router.push("/ads/preview-ad")}
-            >
-              BMW 520 M Sport
-            </Typography>
-            <Stack direction="row" sx={{ gap: 2 }}>
-              {stats.map((item, index) => (
-                <Typography sx={styles.statText} key={index}>
-                  <Image
-                    src={item.icon}
-                    alt={item.icon}
-                    width={18}
-                    height={18}
-                  />
-                  {item.amount}
-                </Typography>
-              ))}
-            </Stack>
-          </Box>
-          <Typography sx={styles.locationText}>
-            <Image
-              src="/images/location.svg"
-              alt="location"
-              width={20}
-              height={20}
-            />
-            2614 Sweetwood Drive, Arvada, CO 80002
-          </Typography>
-          <Stack
-            sx={{
-              alignItems: "center",
-              flexDirection: "row",
-              gap: { xs: 2 },
-              my: 2,
-            }}
-          >
-            <Typography sx={styles.carPrice}>$20,000</Typography>
-            <Typography
-              sx={{ fontSize: "14px", color: "#9CA3AF", whiteSpace: "nowrap" }}
-            >
-              From $430/mo
-            </Typography>
-            {actions.map((action, index) => (
-              <IconButton
-                key={index}
-                size="small"
-                sx={{ bgcolor: action.color, borderRadius: 1 }}
-              >
-                <Image
-                  src={action.icon}
-                  alt={action.alt}
-                  width={24}
-                  height={24}
-                />
-              </IconButton>
+      <TextField
+        placeholder={"Search Ads"}
+        variant="outlined"
+        onChange={(e) => setFilteredAds(e.target.value)}
+        value={filteredAds}
+        sx={{
+          fontSize: "12px",
+          color: "#BFC3CB",
+          marginBottom: 2,
+          backgroundColor: "#F9F9F9",
+          width: { xs: "100%", md: "70%" },
+          maxWidth: "600px",
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "10px",
+            maxHeight: "43px",
+          },
+        }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search sx={{ color: "#BFC3CB" }} />
+            </InputAdornment>
+          ),
+        }}
+      />
+      {
+        loading ? <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "70vh" }}>
+          <CircularProgress sx={{ color: "#07B007" }} />
+        </Box> :
+          <Grid spacing={2} container sx={styles.gridContainer}>
+            {ads.map(ad => (
+              <Grid key={ad?.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                <AdsCard adData={ad} />
+              </Grid>
             ))}
-          </Stack>
-          <Typography sx={styles.carDescription}>
-            Lorem ipsum dolor sit amet consectetur. Ullamcorper imperdiet
-            fermentum mattis ut blandit mattis pretium magna.
-          </Typography>
-        </Grid>
-      </Grid>
-      {/* <Grid container spacing={2}>
-        {adsData.map((ad, index) => <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-          <AdsCard key={index} adData={ad} />
-        </Grid>)}
-      </Grid> */}
+          </Grid>
+      }
     </Box>
   );
 };

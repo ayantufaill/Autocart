@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Grid, IconButton, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import ImageCarousel from "@/components/common/ImageCarousel/ImageCarousel";
+import PreviewAdImage from "@/components/common/PreviewAdImage/PreviewAdImage";
+import { Ad } from "@/types/type";
 
 const styles = {
   container: {},
@@ -51,11 +53,16 @@ const styles = {
   },
 };
 
-const index = () => {
+interface PreviewAdProps {
+  adById: Ad
+}
+
+const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
+  const [isPreview, setIsPreview] = useState<boolean>(false);
   const stats = [
-    { amount: "120", icon: "/images/likes.svg" },
-    { amount: "2k", icon: "/images/view-icon.svg" },
-    { amount: "2k", icon: "/images/share-icon.svg" },
+    { amount: adById?.likes || "0", icon: "/images/likes.svg" },
+    { amount: adById?.views || "0", icon: "/images/view-icon.svg" },
+    { amount: adById?.shares || "0", icon: "/images/share-icon.svg" },
   ];
   const actions = [
     { icon: "/images/call-icon.svg", alt: "call", color: "#EFF6FF" },
@@ -63,25 +70,25 @@ const index = () => {
     { icon: "/images/notification.svg", alt: "notification", color: "#FEF2F2" },
   ];
   const features = [
-    { icon: "/images/calendar.svg", alt: "calender" },
-    { icon: "/images/miles.svg", alt: "miles" },
-    { icon: "/images/petrol.svg", alt: "petrol" },
-    { icon: "/images/automatic.svg", alt: "automatic" },
+    { icon: "/images/calendar.svg", alt: "calender", amount: adById?.yearOfProduction || "N/A" },
+    { icon: "/images/miles.svg", alt: "miles", amount: adById?.mileage || "N/A" },
+    { icon: "/images/petrol.svg", alt: "petrol", amount: adById?.mileageParameter || "N/A" },
+    { icon: "/images/automatic.svg", alt: "automatic", amount: "Automatic" }, // change adById?.mileageParameter || "N/A"
   ];
   const details = [
-    { label: "Make", description: "BMW" },
-    { label: "Model", description: "520 M Sports" },
-    { label: "Seats", description: "05" },
-    { label: "Color", description: "White" },
-    { label: "Door", description: "04" },
-    { label: "Trim", description: "---" },
+    { label: "Make", description: adById?.commercialsMake || "---" },
+    { label: "Model", description: adById?.commercialModel || "---" },
+    { label: "Condition", description: adById?.condition || "---" }, // change
+    { label: "Load capacity", description: adById?.loadCapacity || "---" }, // change
+    { label: "Engine size", description: adById?.engineSize || "---" }, // change
+    { label: "Trim", description: adById?.commercialsMake || "---" }, // change
   ];
 
   return (
     <Box sx={styles.container}>
       <Grid container sx={styles.gridContainer} spacing={5}>
         <Grid size={{ xs: 12, md: 6 }} sx={styles.imageContainer}>
-          <ImageCarousel />
+          <ImageCarousel images={adById?.uploadImagesForAd || Array(4).fill("/images/car-sale-1.webp")} setIsPreview={setIsPreview} />
         </Grid>
         <Grid
           sx={{ padding: { xs: "20px", sm: "25px", md: "30px", lg: "40px" } }}
@@ -95,7 +102,7 @@ const index = () => {
               gap: 2,
             }}
           >
-            <Typography sx={styles.carTitle}>BMW 520 M Sport</Typography>
+            <Typography sx={styles.carTitle}>{`${adById?.itemName || "BMW 520 M Sport"}`}</Typography>
             <Stack direction="row" sx={{ gap: 2 }}>
               {stats.map((item, index) => (
                 <Typography sx={styles.statText} key={index}>
@@ -117,7 +124,7 @@ const index = () => {
               width={20}
               height={20}
             />
-            2614 Sweetwood Drive, Arvada, CO 80002
+            {adById?.location || "2614 Sweetwood Drive, Arvada, CO 80002"}
           </Typography>
           <Stack
             sx={{
@@ -128,7 +135,9 @@ const index = () => {
               my: 2,
             }}
           >
-            <Typography sx={styles.carPrice}>$20,000</Typography>
+            <Typography sx={styles.carPrice}>
+              {`${adById?.priceCurrency === "EURO" ? "€" : "£"}${adById?.price || "3400"}`}
+            </Typography>
             <Stack direction={"row"} spacing={{ xs: 2 }}>
               {actions.map((action, index) => (
                 <IconButton
@@ -147,8 +156,8 @@ const index = () => {
             </Stack>
           </Stack>
           <Typography sx={styles.carDescription}>
-            Lorem ipsum dolor sit amet consectetur. Ullamcorper imperdiet
-            fermentum mattis ut blandit mattis pretium magna.
+            {adById?.descriptions || `Lorem ipsum dolor sit amet 
+            consectetur. Ullamcorper imperdiet fermentum mattis ut blandit mattis pretium magna.`}
           </Typography>
           <Stack
             sx={{
@@ -177,23 +186,24 @@ const index = () => {
                   height={24}
                 />
                 <Typography sx={{ fontSize: "12px", color: "#9CA3AF" }}>
-                  2024
+                  {feature.amount}
                 </Typography>
               </Stack>
             ))}
           </Stack>
-          <Typography variant="body2" sx={{ color: "#1F2937", mb: "8px" }}>
-            Description
-          </Typography>
-          <Typography sx={{ color: "#9CA3AF", fontSize: "12px" }}>
-            Donec dictum tristique porta. Etiam convallis lorem lobortis nulla
-            molestie, nec tincidunt ex ullamcorper. Quisque ultrices lobortis
-            elit sed euismod.
-          </Typography>
-
           <Grid container rowGap={"8px"} sx={{ mt: "24px" }}>
             {details.map((detail, index) => (
-              <Grid key={index} size={{ xs: 4 }} sx={{ textAlign: "center" }}>
+              <Grid
+                sx={{
+                  ":nth-child(3n+2)": {
+                    textAlign: "center"
+                  }, ":nth-child(3n)": {
+                    textAlign: "right"
+                  }
+                }}
+                key={index}
+                size={{ xs: 4 }}
+              >
                 <Typography
                   variant="body2"
                   sx={{ color: "#1F2937", mb: "8px" }}
@@ -208,8 +218,16 @@ const index = () => {
           </Grid>
         </Grid>
       </Grid>
+      {
+        isPreview &&
+        <PreviewAdImage
+          images={adById?.uploadImagesForAd || Array(4).fill("/images/car-sale-1.webp")}
+          setIsPreview={setIsPreview}
+          isPreview={isPreview}
+        />
+      }
     </Box>
   );
 };
 
-export default index;
+export default PreviewAds;
