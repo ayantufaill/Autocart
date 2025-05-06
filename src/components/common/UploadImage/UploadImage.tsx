@@ -55,6 +55,7 @@ const UploadImage: React.FC<UploadImageProps> = ({ setFormData, formData }) => {
                 hidden
                 onChange={handleImageChange}
                 multiple
+                accept="image/jpeg, image/png, image/gif, image/webp, image/svg+xml, image/bmp, image/tiff"
             />
         </>
     )

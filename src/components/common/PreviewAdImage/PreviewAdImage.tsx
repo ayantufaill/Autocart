@@ -83,32 +83,50 @@ const PreviewAdImage: React.FC<PreviewAdImage> = ({ images, setIsPreview, isPrev
                 </IconButton>
 
                 <Box position={"relative"} sx={styles.slideWrapper}>
-                    <IconButton onClick={handlePrev} sx={{ ...styles.arrow, left: -30, }}>
-                        <ChevronLeft sx={{ color: "#9CA3AF" }} />
-                    </IconButton>
+                    {images.length > 1 && <>
+                        <IconButton onClick={handlePrev} sx={{ ...styles.arrow, left: -30, }}>
+                            <ChevronLeft sx={{ color: "#9CA3AF" }} />
+                        </IconButton>
 
-                    <Slider ref={slideRef} {...settings}>
-                        {images
-                            .map((image, index) => (
-                                <Box key={index} sx={styles.imageWrapper}>
-                                    <Image
-                                        src={image}
-                                        alt={`car-${index}`}
-                                        width={400}
-                                        height={400}
-                                        style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "grab" }}
-                                    />
-                                </Box>
-                            ))}
-                    </Slider>
+                        <Slider ref={slideRef} {...settings}>
+                            {images
+                                .map((image, index) => (
+                                    <Box key={index} sx={styles.imageWrapper}>
+                                        <Image
+                                            src={image}
+                                            alt={`car-${index}`}
+                                            width={400}
+                                            height={400}
+                                            style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "grab" }}
+                                        />
+                                    </Box>
+                                ))}
+                        </Slider>
 
-                    <IconButton onClick={handleNext} sx={{ ...styles.arrow, right: -30, }}>
-                        <ChevronRight sx={{ color: "#9CA3AF" }} />
-                    </IconButton>
+                        <IconButton onClick={handleNext} sx={{ ...styles.arrow, right: -30, }}>
+                            <ChevronRight sx={{ color: "#9CA3AF" }} />
+                        </IconButton>
+                    </>}
+                    {
+                        images.length === 1 && < Box
+                            sx={{
+                                width: "100%",
+                                height: { xs: 200, sm: 300, md: 400, lg: 450 },
+                                position: "relative",
+                            }}
+                        >
+                            <Image
+                                src={images[0]}
+                                alt={`car-1`}
+                                fill
+                                style={{ objectFit: "cover" }}
+                            />
+                        </Box>
+                    }
                 </Box>
                 <ImageList cols={4} sx={styles.imagesList}>
                     {
-                        images.map((image, index) => <ImageListItem key={index}>
+                        images.length > 1 && images.map((image, index) => <ImageListItem key={index}>
                             <Image
                                 onClick={() => handleGoTo(index)}
                                 src={image}

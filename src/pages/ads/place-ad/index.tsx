@@ -19,6 +19,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 export interface FormData {
   category: string;
@@ -40,11 +41,11 @@ export interface FormData {
 }
 
 const VehicleForm = () => {
-  const { loading, adImages } = useAppSelector(state => state.ads);
+  const { loading } = useAppSelector(state => state.ads);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const generateAdPayload = (): PostAdPayload => {
+  const generateAdPayload = (adImages: string[]): PostAdPayload => {
     return {
       "categoryId": "e6841936-a788-45c9-af1b-5c18b4ff31a8",
       "uploadImagesForAd": adImages,
@@ -110,13 +111,26 @@ const VehicleForm = () => {
   const handlePublish = () => {
     dispatch(postImagesThunk(formData.adImages))
       .unwrap()
-      .then(() => {
-        const adPayload = generateAdPayload();
-        dispatch(postAdThunk(adPayload))
-          .unwrap()
-          .then(() => router.push("/"))
+      .then(({ urls }) => {
+        if (urls.length > 0) {
+          const adPayload = generateAdPayload(urls);
+          dispatch(postAdThunk(adPayload))
+            .unwrap()
+            .then(() => {
+              router.push("/");
+            })
+            .catch((error) => {
+              toast.error(`Error posting ad: ${error.message || "Something went wrong."}`);
+            });
+        } else {
+          toast.error("Error uploading images");
+        }
       })
-  }
+      .catch((error) => {
+        toast.error(`Error uploading images: ${error.message || "Something went wrong."}`);
+      });
+  };
+
 
   return (
     <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2, py: 4 }}>

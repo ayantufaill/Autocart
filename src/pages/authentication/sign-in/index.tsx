@@ -29,14 +29,14 @@ export default function LoginPage() {
   const handleTogglePassword = () => setShowPassword(!showPassword);
   const handleLogin = () => {
     dispatch(loginUserThunk({ email, password }))
-    // .unwrap()
-    // .then((res: any) => {
-    //   console.log("Login Success:", res);
-    //   router.push("/");
-    // })
-    // .catch((err: any) => {
-    //   console.error("Login Error:", err);
-    // });
+    .unwrap()
+    .then((res: unknown) => {
+      console.log("Login Success:", res);
+      router.push("/");
+    })
+    .catch((err: unknown) => {
+      console.error("Login Error:", err);
+    });
   };
 
   return (

@@ -88,7 +88,15 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
     <Box sx={styles.container}>
       <Grid container sx={styles.gridContainer} spacing={5}>
         <Grid size={{ xs: 12, md: 6 }} sx={styles.imageContainer}>
-          <ImageCarousel images={adById?.uploadImagesForAd || Array(4).fill("/images/car-sale-1.webp")} setIsPreview={setIsPreview} />
+          {adById ? (
+            adById?.uploadImagesForAd && adById?.uploadImagesForAd.length > 0 ? (
+              <ImageCarousel images={adById?.uploadImagesForAd} setIsPreview={setIsPreview} />
+            ) : (
+              <Typography sx={{ textAlign: "center", pt: 2 }}>No Images Available</Typography>
+            )
+          ) : (
+            <ImageCarousel images={Array(4).fill("/images/car-sale-1.webp")} setIsPreview={setIsPreview} />
+          )}
         </Grid>
         <Grid
           sx={{ padding: { xs: "20px", sm: "25px", md: "30px", lg: "40px" } }}

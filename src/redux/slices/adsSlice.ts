@@ -28,7 +28,7 @@ interface adsState {
   loading: boolean;
   error: string | null;
   ads: Ad[];
-  adImages: string[];
+  uploadedAdImages: string[];
   adById: Ad | null;
 }
 
@@ -36,12 +36,12 @@ const initialState: adsState = {
   loading: false,
   error: null,
   ads: [],
-  adImages: [],
+  uploadedAdImages: [],
   adById: null,
 };
 
 const transformedAds = (ads: Ad[]): Ad[] => {
-  const newAds = ads.map((ad) => ({
+  const newAds = ads?.map((ad) => ({
     id: ad?.id,
     categoryId: ad?.categoryId,
     uploadImagesForAd: ad?.uploadImagesForAd,
@@ -99,7 +99,7 @@ export const postImagesThunk = createAsyncThunk(
   async (images: File[], { rejectWithValue }) => {
     try {
       const response = await postImagesApi(images);
-      return response.urls;
+      return response;
     } catch (error: unknown) {
       rejectWithValue(ResolveError(error) || "Failed to upload images.");
     }
@@ -114,7 +114,6 @@ export const fetchSearchAdsThunk = createAsyncThunk(
   ) => {
     try {
       const response = await fetchSearchAdsApi({ search, status });
-      console.log(response);
       return response.data;
     } catch (error: unknown) {
       rejectWithValue(ResolveError(error) || "Failed to search ads. ");
@@ -174,11 +173,12 @@ const adsSlice = createSlice({
       })
       .addCase(postImagesThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.adImages = action.payload;
+        state.uploadedAdImages = action.payload;
       })
       .addCase(postImagesThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+        // toast.error(state.error);
       })
       // search ads
       .addCase(fetchSearchAdsThunk.pending, (state) => {
@@ -202,12 +202,10 @@ const adsSlice = createSlice({
       .addCase(fetchAdByIdThunk.fulfilled, (state, action) => {
         state.loading = false;
         [state.adById] = transformedAds([action.payload]);
-        console.log(action.payload);
       })
       .addCase(fetchAdByIdThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-        console.log(action.payload);
       });
   },
 });

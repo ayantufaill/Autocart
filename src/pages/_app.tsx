@@ -6,6 +6,7 @@ import { store } from "@/redux/store";
 import { useRouter } from "next/router";
 import { CssBaseline } from "@mui/material";
 import Header from "@/components/core/Header/Header";
+import { ToastContainer } from "react-toastify";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -30,10 +31,13 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   }, [hideHeaderRoutes, router]);
 
   return (
-    <Provider store={store}>
-      <CssBaseline />
-      {!hideHeader && <Header />}
-      <Component {...pageProps} />
-    </Provider>
+    <>
+      <Provider store={store}>
+        <CssBaseline />
+        {!hideHeader && <Header />}
+        <Component {...pageProps} />
+      </Provider>
+      <ToastContainer />
+    </>
   );
 }

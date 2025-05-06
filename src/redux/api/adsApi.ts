@@ -1,6 +1,6 @@
 import api from "@/services/api";
 import { PostAdPayload } from "@/types/type";
-  
+
 export const postAdApi = async (payload: PostAdPayload) => {
   const response = await api.post("/ads", payload);
   return response.data;
@@ -19,6 +19,7 @@ export const postImagesApi = async (images: File[]) => {
   }
 
   const response = await api.post("/cloudinary/upload/multiple", formData);
+  console.log("images api", response.data.urls);
   return response.data;
 };
 

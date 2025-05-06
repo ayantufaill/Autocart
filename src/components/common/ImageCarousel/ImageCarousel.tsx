@@ -38,7 +38,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, setIsPreview }) =
     e.stopPropagation();
     slideRef.current?.slickNext();
   }
-
+  const filteredImages = images.filter(item => item !== "image1.jpg" && item !== "image2.jpg");
   return (
     <Box sx={{
       position: "relative",
@@ -48,8 +48,8 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, setIsPreview }) =
       onClick={() => {
         setIsPreview(true);
       }}>
-      <Slider ref={slideRef} {...settings}>
-        {images
+      {filteredImages.length > 1 && <><Slider ref={slideRef} {...settings}>
+        {filteredImages
           .map((item, index) => (
             <Box
               key={index}
@@ -67,14 +67,32 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, setIsPreview }) =
               />
             </Box>
           ))}
-      </Slider>
-      <IconButton onClick={handlePrev} sx={{ ...styles.arrow, }}>
-        <ChevronLeft sx={{ color: "#FFF" }} />
-      </IconButton>
-      <IconButton onClick={handleNext} sx={{ ...styles.arrow, right: 0 }}>
-        <ChevronRight sx={{ color: "#FFF" }} />
-      </IconButton>
-    </Box>
+      </Slider >
+        <IconButton onClick={handlePrev} sx={{ ...styles.arrow, }}>
+          <ChevronLeft sx={{ color: "#FFF" }} />
+        </IconButton>
+        <IconButton onClick={handleNext} sx={{ ...styles.arrow, right: 0 }}>
+          <ChevronRight sx={{ color: "#FFF" }} />
+        </IconButton>
+      </>
+      }
+      {
+        filteredImages.length === 1 && < Box
+          sx={{
+            width: "100%",
+            height: { xs: 200, sm: 300, md: 400, lg: 450 },
+            position: "relative",
+          }}
+        >
+          <Image
+            src={filteredImages[0]}
+            alt={`car-1`}
+            fill
+            style={{ objectFit: "cover" }}
+          />
+        </Box>
+      }
+    </Box >
   );
 }
 
