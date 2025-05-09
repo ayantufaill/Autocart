@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import Image from "next/image";
+import {
+  fetchStoriesThunk,
+  fetchTrendingStoriesThunk,
+} from "@/redux/slices/storySlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 const ads = [
   {
@@ -84,6 +89,13 @@ const AdCard = ({ ad }: { ad: Ad }) => (
 );
 
 const HomePage = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchStoriesThunk());
+    dispatch(fetchTrendingStoriesThunk());
+  }, [dispatch]);
+
   return (
     <Box sx={{ px: 2, pt: 4 }}>
       {/* Search Box */}

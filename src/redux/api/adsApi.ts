@@ -19,7 +19,6 @@ export const postImagesApi = async (images: File[]) => {
   }
 
   const response = await api.post("/cloudinary/upload/multiple", formData);
-  console.log("images api", response.data.urls);
   return response.data;
 };
 

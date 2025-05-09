@@ -66,6 +66,11 @@ const transformedAds = (ads: Ad[]): Ad[] => {
     likes: ad?.likes,
     shares: ad?.shares,
     views: ad?.views,
+    user: {
+      name: ad?.user?.name,
+    },
+    // createDate: ad?.createdDate,
+    // createdTime: ad?.createdTime,
   }));
   return newAds;
 };
@@ -87,9 +92,10 @@ export const fetchAdsThunk = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await fetchAdsApi();
+      console.log(response.data);
       return response.data;
     } catch (error: unknown) {
-      rejectWithValue(ResolveError(error) || "Failed to get ads.");
+      return rejectWithValue(ResolveError(error) || "Failed to get ads.");
     }
   }
 );
@@ -101,7 +107,7 @@ export const postImagesThunk = createAsyncThunk(
       const response = await postImagesApi(images);
       return response;
     } catch (error: unknown) {
-      rejectWithValue(ResolveError(error) || "Failed to upload images.");
+      return rejectWithValue(ResolveError(error) || "Failed to upload images.");
     }
   }
 );
@@ -116,7 +122,7 @@ export const fetchSearchAdsThunk = createAsyncThunk(
       const response = await fetchSearchAdsApi({ search, status });
       return response.data;
     } catch (error: unknown) {
-      rejectWithValue(ResolveError(error) || "Failed to search ads. ");
+      return rejectWithValue(ResolveError(error) || "Failed to search ads. ");
     }
   }
 );
@@ -128,7 +134,7 @@ export const fetchAdByIdThunk = createAsyncThunk(
       const response = await fetchAdByIdApi(id);
       return response.data;
     } catch (error: unknown) {
-      rejectWithValue(ResolveError(error) || "Failed to fetch Ad. ");
+      return rejectWithValue(ResolveError(error) || "Failed to fetch Ad. ");
     }
   }
 );
@@ -160,7 +166,8 @@ const adsSlice = createSlice({
       .addCase(fetchAdsThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.ads = transformedAds(action.payload);
-        if (state.ads.length === 0) state.error = "No ads found. ";
+        if (state.ads?.length === 0 || !state.ads)
+          state.error = "No ads found. ";
       })
       .addCase(fetchAdsThunk.rejected, (state, action) => {
         state.loading = false;
@@ -188,7 +195,8 @@ const adsSlice = createSlice({
       .addCase(fetchSearchAdsThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.ads = action.payload;
-        if (state.ads.length === 0) state.error = "No ads found. ";
+        if (state.ads?.length === 0 || !state.ads)
+          state.error = "No matching ads found. ";
       })
       .addCase(fetchSearchAdsThunk.rejected, (state, action) => {
         state.loading = false;

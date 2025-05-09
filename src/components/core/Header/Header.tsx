@@ -1,17 +1,15 @@
-import { Stack, Button, Typography } from "@mui/material";
+import { Stack, Button, Typography, Box } from "@mui/material";
 import Image from "next/image";
 import React from "react";
 import { useRouter } from "next/router";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 
 const styles = {
   container: {
     bgcolor: "#F9FAFB",
     p: { xs: "10px 20px", md: "20px 40px" },
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    height: { xs: "60px", md: "80px" },
   },
   logo: {
     width: "120px",
@@ -27,8 +25,9 @@ const Header = () => {
   const isHomePage = pathname === "/";
   const isPlaceAdPage = pathname === "/ads/place-ad";
   const isPreviewAdPage = pathname === "/ads/preview-ad";
-  const isProfilePage = pathname === "/profile"
-  const previewPostedAd = pathname !== "/ads/preview-ad" && pathname.includes("/ads/preview-ad");
+  const isProfilePage = pathname === "/profile";
+  const previewPostedAd =
+    pathname !== "/ads/preview-ad" && pathname.includes("/ads/preview-ad");
 
   const handleLogoClick = () => {
     router.push("/");
@@ -52,8 +51,8 @@ const Header = () => {
   };
 
   const handleEdit = () => {
-    router.push("/profile/edit")
-  }
+    router.push("/profile/edit");
+  };
 
   const handleReset = () => {
     console.log("Reset clicked");
@@ -67,7 +66,13 @@ const Header = () => {
   return (
     <Stack sx={styles.container}>
       {isHomePage && (
-        <>
+        <Stack
+          sx={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <Image
             src="/images/autocart-logo.svg"
             alt="autocart-logo"
@@ -94,7 +99,7 @@ const Header = () => {
               height={24}
             />
           </Stack>
-        </>
+        </Stack>
       )}
 
       {isPlaceAdPage && (
@@ -184,8 +189,8 @@ const Header = () => {
         </>
       )}
 
-      {
-        isProfilePage && <>
+      {isProfilePage && (
+        <>
           <Stack
             direction="row"
             alignItems="center"
@@ -217,10 +222,10 @@ const Header = () => {
             </Button>
           </Stack>
         </>
-      }
+      )}
 
-      {
-        previewPostedAd && <>
+      {previewPostedAd && (
+        <>
           <Stack
             direction="row"
             alignItems="center"
@@ -245,25 +250,29 @@ const Header = () => {
             </Typography>
           </Stack>
         </>
-      }
+      )}
 
       {/* Other Pages */}
-      {!isHomePage && !isPlaceAdPage && !isPreviewAdPage && !isProfilePage && !previewPostedAd && (
-        <>
-          <Stack sx={{ flexDirection: "row", gap: 2 }}>
-            <Button
-              onClick={() => router.push("/")}
-              sx={{
-                bgcolor: "#07B007",
-                color: "#FFF",
-                fontSize: { xs: "12px", md: "14px" },
-              }}
-            >
-              Dashboard
-            </Button>
-          </Stack>
-        </>
-      )}
+      {!isHomePage &&
+        !isPlaceAdPage &&
+        !isPreviewAdPage &&
+        !isProfilePage &&
+        !previewPostedAd && (
+          <>
+            <Stack sx={{ flexDirection: "row", gap: 2 }}>
+              <Button
+                onClick={() => router.push("/")}
+                sx={{
+                  bgcolor: "#07B007",
+                  color: "#FFF",
+                  fontSize: { xs: "12px", md: "14px" },
+                }}
+              >
+                Dashboard
+              </Button>
+            </Stack>
+          </>
+        )}
     </Stack>
   );
 };
