@@ -42,5 +42,8 @@ export interface Ad extends PostAdPayload {
   views: number;
   user: {
     name: string;
+    role: string;
+    id: string;
   };
+  createDate: string;
 }

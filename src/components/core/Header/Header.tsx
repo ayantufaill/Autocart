@@ -1,9 +1,11 @@
-import { Stack, Button, Typography, Box } from "@mui/material";
+import { Stack, Button, Typography, Menu, MenuItem } from "@mui/material";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import EditIcon from "@mui/icons-material/Edit";
+import { Notifications } from "@mui/icons-material";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const styles = {
   container: {
@@ -19,6 +21,8 @@ const styles = {
 };
 
 const Header = () => {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const open = Boolean(anchorEl);
   const router = useRouter();
   const { pathname } = router;
 
@@ -28,23 +32,24 @@ const Header = () => {
   const isProfilePage = pathname === "/profile";
   const previewPostedAd =
     pathname !== "/ads/preview-ad" && pathname.includes("/ads/preview-ad");
+  const isAccountPage = pathname.includes("/account");
 
   const handleLogoClick = () => {
     router.push("/");
   };
-  const handlePlaceAdClick = () => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
+  // const handlePlaceAdClick = () => {
+  //   if (typeof window !== "undefined") {
+  //     const token = localStorage.getItem("token");
 
-      if (!token) {
-        console.log("No token found", token);
-        router.push("/authentication/sign-in");
-      } else {
-        console.log("Token found", token);
-        router.push("/ads/place-ad");
-      }
-    }
-  };
+  //     if (!token) {
+  //       console.log("No token found", token);
+  //       router.push("/authentication/sign-in");
+  //     } else {
+  //       console.log("Token found", token);
+  //       // router.push("/ads/place-ad");
+  //     }
+  //   }
+  // };
 
   const handleBack = () => {
     router.back();
@@ -83,15 +88,49 @@ const Header = () => {
           />
           <Stack sx={{ flexDirection: "row", gap: 2 }}>
             <Button
-              onClick={handlePlaceAdClick}
+              onClick={(e) => setAnchorEl(e.currentTarget)}
               sx={{
                 bgcolor: "#07B007",
                 color: "#FFF",
                 fontSize: { xs: "12px", md: "14px" },
+                textTransform: "none",
               }}
             >
-              Place Ad +
+              Manage Ads
             </Button>
+
+            <Menu
+              open={open}
+              anchorEl={anchorEl}
+              onClose={() => setAnchorEl(null)}
+            >
+              {[
+                { link: "/ads/place-ad", label: "Place Ad+" },
+                { link: "/ads/my-ads", label: "My Ads" },
+              ].map((item, index) => (
+                <MenuItem
+                  key={index}
+                  sx={{
+                    ":hover": { color: "#FFF", bgcolor: "#07B007" },
+                    fontSize: { xs: "12px", md: "14px" },
+                  }}
+                  onClick={() => {
+                    if (typeof window != "undefined") {
+                      const token = localStorage.getItem("token");
+                      if (!token) {
+                        router.push("/authentication/sign-in");
+                      } else {
+                        router.push(item.link);
+                      }
+                    }
+                    setAnchorEl(null);
+                  }}
+                >
+                  {item.label}
+                </MenuItem>
+              ))}
+            </Menu>
+
             <Image
               src="/images/filter-icon.svg"
               alt="filter"
@@ -224,6 +263,45 @@ const Header = () => {
         </>
       )}
 
+      {isAccountPage && (
+        <>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+          >
+            <Button
+              onClick={() => {
+                console.log("menu");
+              }}
+              sx={{ minWidth: "auto", color: "#111827" }}
+            >
+              <MenuIcon fontSize="small" />
+            </Button>
+
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: "18px",
+                color: "#111827",
+              }}
+            >
+              My Account
+            </Typography>
+
+            <Button
+              onClick={() => {
+                console.log("notifications");
+              }}
+              sx={{ minWidth: "auto", color: "#1F2937" }}
+            >
+              <Notifications fontSize="small" />
+            </Button>
+          </Stack>
+        </>
+      )}
+
       {previewPostedAd && (
         <>
           <Stack
@@ -257,7 +335,8 @@ const Header = () => {
         !isPlaceAdPage &&
         !isPreviewAdPage &&
         !isProfilePage &&
-        !previewPostedAd && (
+        !previewPostedAd &&
+        !isAccountPage && (
           <>
             <Stack sx={{ flexDirection: "row", gap: 2 }}>
               <Button

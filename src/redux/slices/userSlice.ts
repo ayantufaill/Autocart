@@ -44,13 +44,11 @@ const userSlice = createSlice({
       })
       .addCase(fetchUserByIdThunk.fulfilled, (state, action) => {
         state.loading = false;
-        const { data } = action.payload;
         const transformedUser = {
-          name: data?.name,
-          email: data?.email,
-          address: data?.addreess,
+          name: action.payload?.name,
+          email: action.payload?.email,
+          address: action.payload?.address,
         };
-        
         state.userById = transformedUser;
       })
       .addCase(fetchUserByIdThunk.rejected, (state, action) => {

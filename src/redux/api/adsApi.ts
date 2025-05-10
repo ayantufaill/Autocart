@@ -31,11 +31,17 @@ export const fetchSearchAdsApi = async ({
 }) => {
   const response = await api.get("/ads", {
     params: { itemName: search, status: status },
+    // headers: { Authorization: null },
   });
   return response.data;
 };
 
 export const fetchAdByIdApi = async (id: string) => {
   const response = await api.get(`/ads/${id}`);
+  return response.data;
+};
+
+export const deleteAdByIdApi = async (id: string) => {
+  const response = await api.delete(`/ads/${id}`);
   return response.data;
 };

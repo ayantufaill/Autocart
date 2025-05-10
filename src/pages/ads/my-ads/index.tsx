@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Box, Stack } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import { fetchAdsThunk, fetchSearchAdsThunk } from "@/redux/slices/adsSlice";
+import AdsTable from "@/components/common/AdsTable/AdsTable";
+import ErrorState from "@/components/common/ErrorState/ErrorState";
+import Loading from "@/components/common/Loading/Loading";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { fetchAdsThunk, fetchSearchAdsThunk } from "@/redux/slices/adsSlice";
 import { Search } from "@mui/icons-material";
-import AdsCard from "../AdsCard/AdsCard";
-import ErrorState from "../ErrorState/ErrorState";
-import Loading from "../Loading/Loading";
+import { Box, Button, Stack } from "@mui/material";
+import { useEffect, useState } from "react";
 
 const styles = {
-  container: {
-    padding: { xs: "20px", sm: "25px", md: "30px", lg: "40px" },
-  },
-  gridContainer: { py: 4 },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -27,21 +22,19 @@ const styles = {
   input: { outline: "none", flex: 1, fontSize: "16px", border: "none" },
 };
 
-const Homepage = () => {
+const Index = () => {
   const [filteredAds, setFilteredAds] = useState("");
   const dispatch = useAppDispatch();
   const { ads, loading, error } = useAppSelector((state) => state.ads);
 
   useEffect(() => {
-    if (filteredAds) {
-      dispatch(fetchSearchAdsThunk({ search: filteredAds }));
-    } else {
+    if (!filteredAds) {
       dispatch(fetchAdsThunk());
     }
-  }, [dispatch, filteredAds]);
+  }, [filteredAds, dispatch]);
 
   return (
-    <Box sx={styles.container}>
+    <Box sx={{ p: 2 }}>
       <Stack sx={styles.inputWrapper}>
         <label style={{ marginTop: 4 }} htmlFor="search">
           <Search />
@@ -53,24 +46,26 @@ const Homepage = () => {
           placeholder="Search Ads"
           style={styles.input}
         />
+        <Button
+          size="small"
+          sx={{ textTransform: "none", bgcolor: "#07B007", color: "#FFF" }}
+          onClick={() => {
+            dispatch(fetchSearchAdsThunk({ search: filteredAds }));
+          }}
+        >
+          Search
+        </Button>
       </Stack>
+
       {loading ? (
         <Loading />
+      ) : error ? (
+        <ErrorState error={error} />
       ) : (
-        <Grid spacing={2} container sx={styles.gridContainer}>
-          {error ? (
-            <ErrorState error={error} />
-          ) : (
-            ads?.map((ad) => (
-              <Grid key={ad?.id} size={{ xs: 12 }}>
-                <AdsCard adData={ad} />
-              </Grid>
-            ))
-          )}
-        </Grid>
+        <AdsTable ads={ads} />
       )}
     </Box>
   );
 };
 
-export default Homepage;
+export default Index;

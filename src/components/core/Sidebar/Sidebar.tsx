@@ -6,6 +6,7 @@ import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 import MessageIcon from "@mui/icons-material/Message";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
+import { useRouter } from "next/router";
 
 const styles = {
   sidebarConteiner: {
@@ -42,39 +43,33 @@ const styles = {
 const Sidebar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-  // const sidebarItems = [
-  //     { icon: "/images/car.svg", label: "Cars" },
-  //     { icon: "/images/search.svg", label: "Search" },
-  //     { icon: "/images/scan.svg", label: "Scan" },
-  //     { icon: "/images/message.svg", label: "Messages" },
-  //     { icon: "/images/story.svg", label: "Story" },
-  //     { icon: "/images/account.svg", label: "Account" },
-  // ];
+  const router = useRouter();
 
   const sidebarItems = [
-    { icon: <DirectionsCarIcon />, label: "Cars" },
-    { icon: <SearchIcon />, label: "Search" },
-    { icon: <QrCodeScannerIcon />, label: "Scan" },
-    { icon: <MessageIcon />, label: "Messages" },
-    { icon: <AutoStoriesOutlinedIcon />, label: "Story" },
-    { icon: <AccountBoxIcon />, label: "Account" },
+    { icon: <DirectionsCarIcon />, label: "Cars", link: "/" },
+    { icon: <SearchIcon />, label: "Search", link: "/search" },
+    { icon: <QrCodeScannerIcon />, label: "Scan", link: "/scan" },
+    { icon: <MessageIcon />, label: "Messages", link: "/messages" },
+    {
+      icon: <AutoStoriesOutlinedIcon />,
+      label: "Story",
+      link: "/ads/stroy-name",
+    },
+    { icon: <AccountBoxIcon />, label: "Account", link: "/account" },
   ];
 
-  const activeIndex = 0;
-
-  return (
+  return isMobile ? (
     <Stack direction={{ xs: "row", md: "column" }} sx={styles.sidebarConteiner}>
       {sidebarItems.map((item, index) => (
         <Stack
+          onClick={() => router.push(item.link)}
           key={index}
           sx={{
             ...styles.sidebarWrapper,
-            bgcolor: index === activeIndex ? "#07B007" : "transparent",
-            color: index === activeIndex ? "#FFF" : "#6B7280",
+            bgcolor: router.pathname === item.link ? "#07B007" : "transparent",
+            color: router.pathname === item.link ? "#FFF" : "#6B7280",
           }}
         >
-          {/* <Image src={item.icon} alt={item.label} width={40} height={40} /> */}
           {item.icon}
           {!isMobile && (
             <Typography variant="body1" sx={styles.text}>
@@ -84,6 +79,8 @@ const Sidebar = () => {
         </Stack>
       ))}
     </Stack>
+  ) : (
+    <></>
   );
 };
 

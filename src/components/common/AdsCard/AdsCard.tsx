@@ -1,33 +1,56 @@
+import React from "react";
+import { Box, Grid, IconButton, Stack, Typography } from "@mui/material";
+import Image from "next/image";
+import UserProfileCard from "../UserProfileCard/UserProfileCard";
+import ImageGallery from "../ImageGallery/ImageGallery";
 import { Ad } from "@/types/type";
-import {
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Popover,
-  Stack,
-  Typography,
-} from "@mui/material";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
-import CarRepairIcon from "@mui/icons-material/CarRepair";
-import { Phone } from "@mui/icons-material";
-import ImageIcon from "@mui/icons-material/Image";
 
 const styles = {
-  wrapper: {
-    position: "relative",
+  gridContainer: {
+    py: 4,
+  },
+  imageContainer: {
     display: "flex",
-    flexDirection: { xs: "column", md: "row" },
     gap: 2,
-    maxWidth: { xs: 315, md: "100%" },
-    mx: { xs: "auto", sm: 0 },
-    p: 2,
-    border: "1px solid #CACACA",
-    ":hover": {
-      boxShadow: 3,
-      cursor: "pointer",
-    },
+    flexDirection: { xs: "column", xl: "row" },
+  },
+  imageList: {
+    borderRadius: 12,
+  },
+  imageStack: {
+    gap: 2,
+    flexDirection: { xs: "row", xl: "column" },
+  },
+  carTitle: {
+    fontSize: { xs: "16", sm: "18px", md: "20px" },
+    fontWeight: 600,
+    color: "#1F2937",
+    my: 1,
+    ":hover": { color: "#253347" },
+  },
+  carPrice: {
+    fontSize: { xs: "24px" },
+    fontWeight: 600,
+    color: "#07B007",
+  },
+  locationText: {
+    fontSize: { xs: "14px", md: "16px" },
+    color: "#9CA3AF",
+    display: "flex",
+    gap: 1,
+    my: 1,
+  },
+  carDescription: {
+    fontSize: { xs: "12px", md: "14px" },
+    color: "#9CA3AF",
+    maxWidth: 480,
+  },
+  statText: {
+    fontSize: { xs: "12px", md: "14px", lg: "16px" },
+    color: "#9CA3AF",
+    display: "flex",
+    gap: 1,
   },
 };
 
@@ -36,173 +59,108 @@ interface AdsCardProps {
 }
 
 const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const router = useRouter();
-  const handleRouteChange = () => router.push(`/ads/preview-ad/${adData?.id}`);
-  const handlePhoneClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    setAnchorEl(e.currentTarget);
-  };
+  const stats = [
+    { amount: adData?.likes || 0, icon: "/images/likes.svg" },
+    { amount: adData?.views || 0, icon: "/images/view-icon.svg" },
+    { amount: adData?.shares || 0, icon: "/images/share-icon.svg" },
+  ];
+  const actions = [
+    { icon: "/images/call-icon.svg", alt: "call", color: "#EFF6FF" },
+    { icon: "/images/message.svg", alt: "message", color: "#F0FDFA" },
+    { icon: "/images/notification.svg", alt: "notification", color: "#FEF2F2" },
+  ];
 
-  const open = Boolean(anchorEl);
-
-  // useEffect(() => {
-  //   console.log(new Date());
-  // }, []);
   return (
-    <Card onClick={handleRouteChange} sx={styles.wrapper}>
-      {adData.uploadImagesForAd?.[0] &&
-      adData.uploadImagesForAd?.[0] != "image1.jpg" ? (
-        <CardMedia
-          sx={{
-            height: { xs: 160, md: 160 },
-            width: { xs: "100%", md: 300 },
-            objectFit: "cover",
-            backgroundPosition: "center",
-            borderRadius: 1,
-          }}
-          image={adData.uploadImagesForAd?.[0]}
-          title="car-image"
-        />
-      ) : (
-        <Stack
-          sx={{
-            py: 5,
-            gap: 2,
-            alignItems: "center",
-            width: { xs: "100%", md: 300 },
-            height: { xs: 160, md: 160 },
-            border: "1px solid #CACACA",
-            borderRadius: 1,
-          }}
-        >
-          <CarRepairIcon sx={{ fontSize: 40, color: "#9CA3AF" }} />
-          <Typography>No image available</Typography>
-        </Stack>
-      )}
-      <CardContent
-        sx={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          gap: 1,
-          px: 0,
-        }}
-      >
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          justifyContent={"space-between"}
-        >
-          <Typography
-            variant="h6"
-            sx={{ fontSize: { xs: "18px", md: "20px" } }}
-            color="#233d7b"
-          >
-            {adData?.itemName}
-          </Typography>
-          <Typography
-            variant="h6"
-            component={"p"}
-            fontWeight={500}
-            color="#07B007"
-            sx={{ fontSize: { xs: "18px", md: "20px" } }}
-          >
-            {adData?.priceCurrency === "EURO" ? "€" : "£"}
-            {adData.price}
-          </Typography>
-        </Stack>
-        <Typography variant="body2" color="#9CA3AF">
-          {adData?.location}
-        </Typography>
+    <Box>
+      {/*  sx={{ display: "flex", flexDirection: "column", gap: "16px" }} */}
+      <UserProfileCard
+        username={adData?.user?.name}
+        role={adData?.user?.role}
+        date={adData?.createDate}
+        id={adData?.user?.id}
+      />
+      <Grid container sx={styles.gridContainer} spacing={4}>
+        <Grid size={{ xs: 12, md: 6 }} sx={styles.imageContainer}>
+          <ImageGallery images={adData?.uploadImagesForAd} />
+        </Grid>
 
-        <Stack
-          spacing={1}
-          direction={{ xs: "column", md: "row" }}
-          alignItems={{ xs: "start", md: "center" }}
-          justifyContent={"space-between"}
-        >
-          <Stack direction={"row"} spacing={2} mt={1}>
-            {[
-              adData.yearOfProduction || "N/A",
-              `${adData.mileage + adData.mileageParameter}`,
-              `${adData.engineSize * 1000}cc`,
-            ].map((item, index) => (
-              <Typography
-                key={index}
-                sx={{
-                  fontSize: "14px",
-                  pr: 2,
-                  borderRight: "2px solid #CACACA",
-                }}
-              >
-                {item}
-              </Typography>
-            ))}
-          </Stack>
-
-          <Button
-            id="phone"
-            disableTouchRipple
-            size="small"
-            variant="contained"
-            sx={{ fontSize: "10px", gap: 1, color: "#FFF", bgcolor: "#07B007" }}
-            onClick={handlePhoneClick}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: { xs: "space-between", md: "flex-start" },
+              alignItems: "center",
+              gap: 2,
+            }}
           >
-            <Phone sx={{ fontSize: "18px" }} />
-            Show Phone no
-          </Button>
-        </Stack>
-        <Popover
-          onClick={(e) => e.stopPropagation()}
-          id="phone"
-          open={open}
-          anchorEl={anchorEl}
-          onClose={() => setAnchorEl(null)}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-        >
-          <Stack spacing={1} sx={{ p: 2, width: 150, alignItems: "center" }}>
-            <Typography>{adData?.user?.name}</Typography>
-            <Stack
-              direction={"row"}
-              alignItems={"center"}
-              sx={{ color: "#07B007" }}
-              spacing={0.5}
+            <Typography
+              onClick={() => router.push("/ads/preview-ad/" + adData?.id)}
+              sx={styles.carTitle}
             >
-              <Phone sx={{ fontSize: "18px" }} />
-              <span style={{ fontSize: "14px" }}>{adData.phoneNumber}</span>
+              {adData?.itemName || "N/A"}
+            </Typography>
+            <Stack direction="row" sx={{ gap: 2 }}>
+              {stats.map((item, index) => (
+                <Typography sx={styles.statText} key={index}>
+                  <Image
+                    src={item.icon}
+                    alt={item.icon}
+                    width={18}
+                    height={18}
+                  />
+                  {item.amount}
+                </Typography>
+              ))}
+            </Stack>
+          </Box>
+          <Typography sx={styles.locationText}>
+            <Image
+              src="/images/location.svg"
+              alt="location"
+              width={20}
+              height={20}
+            />
+            {adData?.location || "N/A"}
+          </Typography>
+          <Stack
+            sx={{
+              alignItems: "center",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              gap: { xs: 2 },
+              my: 2,
+            }}
+          >
+            <Typography sx={styles.carPrice}>PKR {adData?.price}</Typography>
+            {/* <Typography
+              sx={{ fontSize: "14px", color: "#9CA3AF", whiteSpace: "nowrap" }}
+            >
+              From $430/mo
+            </Typography> */}
+            <Stack direction={"row"} spacing={4}>
+              {actions.map((action, index) => (
+                <IconButton
+                  key={index}
+                  size="small"
+                  sx={{ bgcolor: action.color, borderRadius: 1 }}
+                >
+                  <Image
+                    src={action.icon}
+                    alt={action.alt}
+                    width={24}
+                    height={24}
+                  />
+                </IconButton>
+              ))}
             </Stack>
           </Stack>
-        </Popover>
-
-        {/* Uploaded Time */}
-        <Typography sx={{ fontSize: "12px" }}>
-          Uploaded 9 minutes ago
-        </Typography>
-      </CardContent>
-      {/* Image count */}
-      {adData.uploadImagesForAd?.length > 0 && (
-        <Stack
-          position={"absolute"}
-          direction={"row"}
-          spacing={0.5}
-          sx={{
-            p: "2px 12px",
-            left: 16,
-            bottom: { xs: 239, md: 16 },
-            bgcolor: "rgba(0, 0, 0, 0.45)",
-            borderBottomLeftRadius: 2,
-            color: "#FFF",
-            alignItems: "center",
-          }}
-        >
-          <ImageIcon fontSize="small" />
-          <span>{adData.uploadImagesForAd.length}</span>
-        </Stack>
-      )}
-    </Card>
+          <Typography sx={styles.carDescription}>
+            {adData?.descriptions}
+          </Typography>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

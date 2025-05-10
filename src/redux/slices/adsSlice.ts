@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  deleteAdByIdApi,
   fetchAdByIdApi,
   fetchAdsApi,
   fetchSearchAdsApi,
@@ -7,6 +8,7 @@ import {
   postImagesApi,
 } from "../api/adsApi";
 import { Ad, PostAdPayload } from "@/types/type";
+import { toast } from "react-toastify";
 
 export const ResolveError = (error: unknown) => {
   if (error && typeof error === "object" && "response" in error) {
@@ -68,9 +70,10 @@ const transformedAds = (ads: Ad[]): Ad[] => {
     views: ad?.views,
     user: {
       name: ad?.user?.name,
+      role: ad?.user?.role,
+      id: ad?.user?.id,
     },
-    // createDate: ad?.createdDate,
-    // createdTime: ad?.createdTime,
+    createDate: ad?.createDate,
   }));
   return newAds;
 };
@@ -92,7 +95,6 @@ export const fetchAdsThunk = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await fetchAdsApi();
-      console.log(response.data);
       return response.data;
     } catch (error: unknown) {
       return rejectWithValue(ResolveError(error) || "Failed to get ads.");
@@ -135,6 +137,18 @@ export const fetchAdByIdThunk = createAsyncThunk(
       return response.data;
     } catch (error: unknown) {
       return rejectWithValue(ResolveError(error) || "Failed to fetch Ad. ");
+    }
+  }
+);
+
+export const deleteAdByIdThunk = createAsyncThunk(
+  "delete/adById",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = deleteAdByIdApi(id);
+      return response;
+    } catch (error: unknown) {
+      return rejectWithValue(ResolveError(error) || "Failed to delete ad. ");
     }
   }
 );
@@ -196,7 +210,7 @@ const adsSlice = createSlice({
         state.loading = false;
         state.ads = action.payload;
         if (state.ads?.length === 0 || !state.ads)
-          state.error = "No matching ads found. ";
+          state.error = `No results found for  "${action.meta.arg.search}"`;
       })
       .addCase(fetchSearchAdsThunk.rejected, (state, action) => {
         state.loading = false;
@@ -214,6 +228,18 @@ const adsSlice = createSlice({
       .addCase(fetchAdByIdThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      // delete ad by id
+      .addCase(deleteAdByIdThunk.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(deleteAdByIdThunk.fulfilled, (state, action) => {
+        state.ads = state.ads.filter((ad) => ad.id != action.meta.arg);
+        toast.success(action.payload?.message || "Ad deleted successfully.");
+      })
+      .addCase(deleteAdByIdThunk.rejected, (state, action) => {
+        state.error = action.payload as string;
+        toast.error(state.error || "Failed to delete Ad.");
       });
   },
 });

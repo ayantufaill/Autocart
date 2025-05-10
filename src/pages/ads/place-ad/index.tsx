@@ -8,7 +8,6 @@ import {
   FormControl,
   ImageList,
   ImageListItem,
-  InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -28,7 +27,7 @@ export interface FormData {
   currency: string;
   price: string;
   description: string;
-  itemName: string;
+  // itemName: string;
   status: string;
   adType: string;
   licenseNumber: string;
@@ -38,6 +37,10 @@ export interface FormData {
   commercialMake: string;
   commercialModel: string;
   adImages: File[];
+  storyImages: File[];
+  yearOfProduction: string;
+  engineSize: string;
+  loadCapacity: string;
 }
 
 const VehicleForm = () => {
@@ -54,22 +57,24 @@ const VehicleForm = () => {
         "https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3",
       ],
       vehicleLicenseNumber: formData.licenseNumber || "ABC-123",
-      itemName: formData.itemName || "Honda City",
+      itemName:
+        `${formData.commercialMake} ${formData.commercialModel} ${formData.yearOfProduction}` ||
+        "Honda City",
       status: formData.status || "ACTIVE",
-      condition: "NEW", // change to dynamic
+      condition: "OLD",
       adType: formData.adType || "SELLER",
       phoneNumber: formData.phone,
-      location: formData.location || "London, UK",
-      price: Number(formData.price) || 500,
-      priceCurrency: formData.currency || "EURO",
-      descriptions: formData.description || "Brand new Honda City",
-      commercialModel: formData.commercialModel || "Transit", // change to dynamic
-      commercialsMake: formData.commercialMake || "Ford", // change to dynamic
-      mileageParameter: "KM", // change to dynamic
-      mileage: 12000, // change to dynamic
-      loadCapacity: 1500, // change to dynamic
-      yearOfProduction: 2024, // change to dynamic
-      engineSize: 1.4, // change to dynamic
+      location: formData.location || "N/A",
+      price: Number(formData.price) || -1,
+      priceCurrency: "EURO", // change to dynamic
+      descriptions: formData.description || "N/A",
+      commercialModel: formData.commercialModel || "N/A",
+      commercialsMake: formData.commercialMake || "N/A",
+      mileageParameter: formData.mileageUnit,
+      mileage: +formData.mileage,
+      loadCapacity: +formData.loadCapacity,
+      yearOfProduction: +formData.yearOfProduction,
+      engineSize: +formData.engineSize,
     };
   };
 
@@ -85,16 +90,20 @@ const VehicleForm = () => {
     currency: "",
     price: "",
     description: "",
-    itemName: "",
+    // itemName: "",
     status: "",
     adType: "",
     licenseNumber: "",
     mileage: "",
-    mileageUnit: "",
+    mileageUnit: "KM",
     motStatus: "",
     commercialMake: "",
     commercialModel: "",
     adImages: [],
+    storyImages: [],
+    yearOfProduction: "",
+    engineSize: "",
+    loadCapacity: "",
   });
 
   const handleChange = (
@@ -161,147 +170,143 @@ const VehicleForm = () => {
         </FormControl>
       </Stack>
 
-      {/* Vehicle License Number with Find Button */}
-      {/* {formData.category && (
-        <Stack spacing={1}>
-          <Typography>Vehicle License Number</Typography>
-          <Box sx={{ display: "flex", gap: 2 }}>
+      {formData.category && (
+        <>
+          <Stack spacing={1}>
+            <label htmlFor="commercial-make">Make</label>
             <TextField
-              label="License Number"
-              name="licenseNumber"
-              value={formData.licenseNumber}
+              id="commercial-make"
+              placeholder="Enter Commercial Make"
+              name="commercialMake"
+              value={formData.commercialMake}
               onChange={handleChange}
-              sx={{ width: "60%" }}
-            />
-            <Button
-              variant="contained"
-              sx={{ width: "40%", color: "#FFF", bgcolor: "#07B007" }}
-            >
-              Find
-            </Button>
-          </Box>
-        </Stack>
-      )} */}
-
-      {/* Item Name*/}
-      {formData.category && (
-        <Stack spacing={1}>
-          <Typography>Item Name</Typography>
-          <TextField
-            label="Enter Item Name"
-            name="itemName"
-            value={formData.itemName}
-            onChange={handleChange}
-            fullWidth
-          />
-        </Stack>
-      )}
-
-      {/* Status */}
-      {formData.category && (
-        <Stack spacing={1}>
-          <Typography>Status</Typography>
-          <FormControl fullWidth>
-            <Select
-              name="status"
-              value={formData.status}
-              sx={{ fontSize: "14px", color: "#9CA3AF" }}
-              onChange={handleSelectChange}
-              displayEmpty
-            >
-              <MenuItem disabled value="">
-                <span style={{ color: "#9CA3AF", fontSize: "14px" }}>
-                  Select Status
-                </span>
-              </MenuItem>
-              <MenuItem value="ACTIVE">ACTIVE</MenuItem>
-              <MenuItem value="PENDING">PENDING</MenuItem>
-              <MenuItem value="REJECTED">REJECTED</MenuItem>
-              <MenuItem value="EXPIRED">EXPIRED</MenuItem>
-              <MenuItem value="NEW">NEW</MenuItem>
-              <MenuItem value="USED">USED</MenuItem>
-            </Select>
-          </FormControl>
-        </Stack>
-      )}
-
-      {/* Ad Type */}
-      {formData.category && (
-        <Stack spacing={1}>
-          <Typography>Ad Type</Typography>
-          <FormControl fullWidth>
-            <Select
-              name="adType"
-              value={formData.adType}
-              onChange={handleSelectChange}
-              displayEmpty
-            >
-              <MenuItem disabled value="">
-                <span style={{ color: "#9CA3AF", fontSize: "14px" }}>
-                  Select Ad Type
-                </span>
-              </MenuItem>
-              <MenuItem value="SELLER">SELLER</MenuItem>
-              <MenuItem value="WANTED">WANTED</MenuItem>
-            </Select>
-          </FormControl>
-        </Stack>
-      )}
-
-      {/* 
-      {formData.category === "motorbikes" && (
-        <Stack spacing={1}>
-          <Typography>Mileage</Typography>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <FormControl sx={{ minWidth: 120 }}>
-              <InputLabel id="mileage-unit-label">km</InputLabel>
-              <Select
-                defaultValue="km"
-                labelId="mileage-unit-label"
-                name="mileageUnit"
-                value={formData.mileageUnit}
-                onChange={handleSelectChange}
-                label="Mileage Unit"
-              >
-                <MenuItem value="km">Km</MenuItem>
-                <MenuItem value="miles">Miles</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              label="Mileage"
-              placeholder="Enter mileage"
-              name="mileage"
-              value={formData.mileage}
-              onChange={handleChange}
-              type="number"
               fullWidth
             />
-          </Box>
-        </Stack>
+          </Stack>
+
+          <Stack spacing={1}>
+            <label htmlFor="commercial-model">Model</label>
+            <TextField
+              id="commercial-model"
+              placeholder="Enter Commercial Model"
+              name="commercialModel"
+              value={formData.commercialModel}
+              onChange={handleChange}
+              fullWidth
+            />
+          </Stack>
+
+          <Stack spacing={1}>
+            <label htmlFor="year">Year of Production</label>
+            <TextField
+              id="year"
+              placeholder="Enter Year of Production"
+              name="yearOfProduction"
+              value={formData.yearOfProduction}
+              onChange={handleChange}
+              fullWidth
+            />
+          </Stack>
+
+          {/* Status */}
+          <Stack spacing={1}>
+            <Typography>Status</Typography>
+            <FormControl fullWidth>
+              <Select
+                name="status"
+                value={formData.status}
+                sx={{ fontSize: "14px", color: "#9CA3AF" }}
+                onChange={handleSelectChange}
+                displayEmpty
+              >
+                <MenuItem disabled value="">
+                  <span style={{ color: "#9CA3AF", fontSize: "14px" }}>
+                    Select Status
+                  </span>
+                </MenuItem>
+                <MenuItem value="ACTIVE">ACTIVE</MenuItem>
+                <MenuItem value="PENDING">PENDING</MenuItem>
+                <MenuItem value="REJECTED">REJECTED</MenuItem>
+                <MenuItem value="EXPIRED">EXPIRED</MenuItem>
+                <MenuItem value="NEW">NEW</MenuItem>
+                <MenuItem value="USED">USED</MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
+
+          {/* Ad Type */}
+          <Stack spacing={1}>
+            <Typography>Ad Type</Typography>
+            <FormControl fullWidth>
+              <Select
+                name="adType"
+                value={formData.adType}
+                onChange={handleSelectChange}
+                displayEmpty
+              >
+                <MenuItem disabled value="">
+                  <span style={{ color: "#9CA3AF", fontSize: "14px" }}>
+                    Select Ad Type
+                  </span>
+                </MenuItem>
+                <MenuItem value="SELLER">SELLER</MenuItem>
+                <MenuItem value="WANTED">WANTED</MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
+
+          <Stack spacing={1}>
+            <label htmlFor="engine-size">Engine size</label>
+            <TextField
+              id="engine-size"
+              placeholder="Enter Engine size"
+              name="engineSize"
+              value={formData.engineSize}
+              onChange={handleChange}
+              fullWidth
+            />
+          </Stack>
+
+          <Stack spacing={1}>
+            <label htmlFor="load-capacity">Load Capacity</label>
+            <TextField
+              id="load-capacity"
+              placeholder="Enter Load Capacity"
+              name="loadCapacity"
+              value={formData.loadCapacity}
+              onChange={handleChange}
+              fullWidth
+            />
+          </Stack>
+
+          <Stack spacing={1}>
+            <Typography>Mileage</Typography>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <FormControl sx={{ minWidth: 120 }}>
+                <Select
+                  id="mileage-unit"
+                  name="mileageUnit"
+                  value={formData.mileageUnit}
+                  onChange={handleSelectChange}
+                >
+                  <MenuItem value="KM">Km</MenuItem>
+                  <MenuItem value="MILES">Miles</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                placeholder="Enter mileage"
+                name="mileage"
+                value={formData.mileage}
+                onChange={handleChange}
+                type="number"
+                fullWidth
+              />
+            </Box>
+          </Stack>
+        </>
       )}
 
-      {formData.category === "motorbikes" && (
-        <Stack spacing={1}>
-          <Typography>MOT/NCT Status</Typography>
-          <FormControl fullWidth>
-            <InputLabel id="mot-status-label">Select status</InputLabel>
-            <Select
-              labelId="mot-status-label"
-              name="motStatus"
-              value={formData.motStatus}
-              onChange={handleSelectChange}
-              label="Select status"
-            >
-              <MenuItem value="Valid">Valid</MenuItem>
-              <MenuItem value="Expired">Expired</MenuItem>
-              <MenuItem value="Not Required">Not Required</MenuItem>
-              <MenuItem value="Pending">Pending</MenuItem>
-            </Select>
-          </FormControl>
-        </Stack>
-      )}
-      */}
-
+      {/* Upload Image for ads */}
       <Stack spacing={1}>
         <Typography sx={{ color: "#1F2937" }}>Upload Images</Typography>
         <Typography variant="body2" sx={{ color: "#9CA3AF" }}>
@@ -309,7 +314,11 @@ const VehicleForm = () => {
         </Typography>
 
         <ImageList cols={4} gap={8} sx={{ mt: 2, minHeight: "85px" }}>
-          <UploadImage formData={formData} setFormData={setFormData} />
+          <UploadImage
+            id="uploadAdImage"
+            formData={formData}
+            setFormData={setFormData}
+          />
           {formData.adImages &&
             formData.adImages.map((item, index) => (
               <ImageListItem sx={{ width: "80px", height: "90px" }} key={index}>
@@ -330,48 +339,39 @@ const VehicleForm = () => {
             ))}
         </ImageList>
       </Stack>
-
+      {/* Upload image for stories */}
       {/* <Stack spacing={1}>
         <Typography sx={{ color: "#1F2937" }}>Upload Story</Typography>
         <Typography variant="body2" sx={{ color: "#9CA3AF" }}>
           You can upload up to 5 Images or videos for story
         </Typography>
-        <ImageList cols={4} gap={8} sx={{ mt: 2 }}>
-          <ImageListItem
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              border: "1px solid #9CA3AF",
-              borderRadius: 1,
-            }}
-          >
-            <Image
-              src="/images/upload.svg"
-              alt="upload image"
-              width={20}
-              height={20}
-            />
-          </ImageListItem>
-          {imagesArray.map((item, index) => (
-            <ImageListItem sx={{ width: "85px", height: "85px" }} key={index}>
-              <Image
-                src={item.src}
-                alt={`car-image-${index}`}
-                width={100}
-                height={100}
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  borderRadius: 6,
-                  objectFit: "cover",
-                }}
-              />
-            </ImageListItem>
-          ))}
+
+        <ImageList cols={4} gap={8} sx={{ mt: 2, minHeight: "85px" }}>
+          <UploadImage
+            id="uploadStoryImage"
+            formData={formData}
+            setFormData={setFormData}
+          />
+          {formData.storyImages &&
+            formData.storyImages.map((item, index) => (
+              <ImageListItem sx={{ width: "80px", height: "90px" }} key={index}>
+                <Image
+                  src={URL.createObjectURL(item)}
+                  alt={`car-image-${index}`}
+                  width={100}
+                  height={100}
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto",
+                    borderRadius: 6,
+                    objectFit: "cover",
+                    maxHeight: "90px",
+                  }}
+                />
+              </ImageListItem>
+            ))}
         </ImageList>
       </Stack> */}
-
       {/* <Button
         variant="outlined"
         sx={{
@@ -387,9 +387,10 @@ const VehicleForm = () => {
 
       {/* Phone Number */}
       <Stack spacing={1}>
-        <Typography>Phone Number</Typography>
+        <label htmlFor="phone">Phone Number</label>
         <TextField
-          label="Input your Phone number"
+          id="phone"
+          placeholder="Input your Phone number"
           name="phone"
           value={formData.phone}
           onChange={handleChange}
@@ -399,9 +400,10 @@ const VehicleForm = () => {
 
       {/* Location */}
       <Stack spacing={1}>
-        <Typography sx={{ py: 0 }}>Location</Typography>
+        <label htmlFor="location">Location</label>
         <TextField
-          label="Location"
+          id="location"
+          placeholder="Location"
           name="location"
           value={formData.location}
           onChange={handleChange}
@@ -411,10 +413,10 @@ const VehicleForm = () => {
 
       {/* Price */}
       <Stack spacing={1}>
-        <Typography>Price (PKR)</Typography>
+        <label htmlFor="price">Price (PKR)</label>
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           <TextField
-            label="Amount"
+            id="price"
             placeholder="Enter price"
             name="price"
             value={formData.price}
@@ -427,9 +429,10 @@ const VehicleForm = () => {
 
       {/* Description */}
       <Stack spacing={1}>
-        <Typography>Description</Typography>
+        <label htmlFor="description">Description</label>
         <TextField
-          label="Write Description"
+          id="description"
+          placeholder="Write Description"
           name="description"
           value={formData.description}
           onChange={handleChange}
@@ -438,7 +441,7 @@ const VehicleForm = () => {
           fullWidth
         />
       </Stack>
-
+      {/* Ads details */}
       <Box sx={{ bgcolor: "#F9FAFB", p: { xs: "16px" }, borderRadius: 2 }}>
         <Typography sx={{ fontWeight: 600, color: "#1F2937" }}>
           Ad Details
@@ -446,18 +449,17 @@ const VehicleForm = () => {
         <Typography variant="body2" sx={{ color: "#9CA3AF", my: 2 }}>
           Standard Car Post
         </Typography>
-        <Typography sx={{ mt: 2, fontSize: "12px", color: "#1F2937" }}>
-          <span style={{ color: "#07B007", marginRight: 10 }}>✔</span>30 Days
-          Car Listing
-        </Typography>
-        <Typography sx={{ mt: 2, fontSize: "12px", color: "#1F2937" }}>
-          <span style={{ color: "#07B007", marginRight: 10 }}>✔</span>Upto 20
-          Images
-        </Typography>
-        <Typography sx={{ mt: 2, fontSize: "12px", color: "#1F2937" }}>
-          <span style={{ color: "#07B007", marginRight: 10 }}>✔</span>2x Bump up
-          to the top{" "}
-        </Typography>
+        {["30 Days Car Listing", "Upto 20 Images", "2x Bump upto the top"].map(
+          (item, index) => (
+            <Typography
+              key={index}
+              sx={{ mt: 2, fontSize: "12px", color: "#1F2937" }}
+            >
+              <span style={{ color: "#07B007", marginRight: 10 }}>✔</span>
+              {item}
+            </Typography>
+          )
+        )}
       </Box>
 
       <Button
