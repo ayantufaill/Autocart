@@ -29,7 +29,7 @@ const Index = () => {
 
   useEffect(() => {
     if (!filteredAds) {
-      dispatch(fetchAdsThunk());
+      dispatch(fetchAdsThunk(false));
     }
   }, [filteredAds, dispatch]);
 

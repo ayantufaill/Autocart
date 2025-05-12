@@ -36,7 +36,7 @@ const Homepage = () => {
     if (filteredAds) {
       dispatch(fetchSearchAdsThunk({ search: filteredAds }));
     } else {
-      dispatch(fetchAdsThunk());
+      dispatch(fetchAdsThunk(true));
     }
   }, [dispatch, filteredAds]);
 

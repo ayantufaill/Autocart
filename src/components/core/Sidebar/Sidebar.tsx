@@ -66,8 +66,10 @@ const Sidebar = () => {
           key={index}
           sx={{
             ...styles.sidebarWrapper,
-            bgcolor: router.pathname === item.link ? "#07B007" : "transparent",
-            color: router.pathname === item.link ? "#FFF" : "#6B7280",
+            bgcolor: router.pathname.includes(item.label.toLowerCase())
+              ? "#07B007"
+              : "transparent",
+            color: router.pathname.includes(item.link) ? "#FFF" : "#6B7280",
           }}
         >
           {item.icon}

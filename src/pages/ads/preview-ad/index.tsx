@@ -8,7 +8,7 @@ import { Ad } from "@/types/type";
 const styles = {
   container: {},
   gridContainer: {
-    pb: 4,
+    pb: 8,
   },
   imageContainer: {
     display: "flex",

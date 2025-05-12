@@ -13,7 +13,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
   const hideHeaderRoutes = useMemo(
-    () => ["/authentication/sign-in", "/authentication/sign-up"],
+    () => ["/authentication/sign-in", "/authentication/sign-up", "/authentication/otp"],
     []
   );
 

@@ -35,9 +35,9 @@ const styles = {
 
 interface UserProfileCardProps {
   username: string;
-  role: string;
+  role?: string;
   date?: string;
-  id: string;
+  id?: string;
 }
 
 const UserProfileCard: React.FC<UserProfileCardProps> = ({
@@ -68,14 +68,18 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
           </Typography>
           {date && (
             <Typography sx={styles.userTimestamp}>
-              {formatDistanceToNow(new Date(date), { addSuffix: true })}
+              {date
+                ? formatDistanceToNow(new Date(date), { addSuffix: true })
+                : "3 days ago"}
             </Typography>
           )}
         </Stack>
       </Stack>
-      <Button disableTouchRipple sx={styles.tradeButton}>
-        {role.split("_").join(" ")}
-      </Button>
+      {role && (
+        <Button disableTouchRipple sx={styles.tradeButton}>
+          {role.split("_").join(" ")}
+        </Button>
+      )}
     </Stack>
   );
 };

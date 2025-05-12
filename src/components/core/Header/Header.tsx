@@ -32,7 +32,7 @@ const Header = () => {
   const isProfilePage = pathname === "/profile";
   const previewPostedAd =
     pathname !== "/ads/preview-ad" && pathname.includes("/ads/preview-ad");
-  const isAccountPage = pathname.includes("/account");
+  const isAccountPage = pathname.includes("account");
 
   const handleLogoClick = () => {
     router.push("/");
@@ -292,7 +292,7 @@ const Header = () => {
 
             <Button
               onClick={() => {
-                console.log("notifications");
+                router.push("/account/notifications")
               }}
               sx={{ minWidth: "auto", color: "#1F2937" }}
             >

@@ -6,6 +6,19 @@ import ImageGallery from "../ImageGallery/ImageGallery";
 import { Ad } from "@/types/type";
 import { useRouter } from "next/router";
 
+const getPrice = (price: number) => {
+  if (price < 1e4) {
+    return price + "";
+  }
+  if (price < 1e5) {
+    return price / 1e3 + " Thousnad";
+  } else if (price < 1e7) {
+    return price / 1e5 + " Lacs";
+  } else if (price < 1e9) {
+    return price / 1e7 + " Crores";
+  }
+};
+
 const styles = {
   gridContainer: {
     py: 4,
@@ -132,7 +145,9 @@ const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
               my: 2,
             }}
           >
-            <Typography sx={styles.carPrice}>PKR {adData?.price}</Typography>
+            <Typography sx={styles.carPrice}>
+              PKR {getPrice(adData?.price)}
+            </Typography>
             {/* <Typography
               sx={{ fontSize: "14px", color: "#9CA3AF", whiteSpace: "nowrap" }}
             >

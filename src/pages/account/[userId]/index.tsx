@@ -5,7 +5,7 @@ const Index = () => {
   const router = useRouter();
   return (
     <>
-      {router?.query?.userId && typeof router?.query?.userId === "string" && (
+      {router.query?.userId && typeof router?.query?.userId === "string" && (
         <Account id={router?.query?.userId} />
       )}
     </>

@@ -4,21 +4,26 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { Box } from "@mui/material";
 
-const AdTabs = () => {
+interface AdsTabs {
+  tabData: {
+    title: string;
+    isActive: boolean;
+    color: string;
+    link: string;
+  }[];
+  defaultTab?: number;
+}
+
+const AdTabs: React.FC<AdsTabs> = ({ tabData, defaultTab = 0 }) => {
   const router = useRouter();
 
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(defaultTab);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
     // router.push(tabs[newValue].path);
-    console.log(event, router );
+    console.log(event);
   };
-  const tabItems = [
-    { title: "Active (60)" },
-    { title: "Expired (20)" },
-    { title: "Pending (10)" },
-    { title: "Rejected (3)" },
-  ];
+
   return (
     <Box
       sx={{
@@ -38,21 +43,29 @@ const AdTabs = () => {
         onChange={handleChange}
         aria-label="email navigation tabs"
         TabIndicatorProps={{
-          sx: { backgroundColor: "#07B007" },
+          sx: { backgroundColor: "transparent" },
         }}
         sx={{
           "& .MuiTab-root": {
             color: "#9CA3AF",
             "&.Mui-selected": {
-              color: "#07B007",
+              color: tabData[defaultTab].color,
             },
-            transition: "color 0.3s ease",
+            transition: "color 2.5s ease",
           },
         }}
       >
-        {tabItems.map((tab, index) => (
+        {tabData.map((tab, index) => (
           <Tab
-            sx={{ fontSize: "14px" }}
+            onClick={() => router.push(tab.link)}
+            sx={{
+              fontSize: "14px",
+              color: tab.isActive ? tab.color : "#9CA3AF",
+              fontWeight: tab.isActive ? 600 : 500,
+              borderBottom: `3px solid ${
+                tab.isActive ? tab.color : "transparent"
+              }`,
+            }}
             key={index}
             label={tab.title}
             disableTouchRipple

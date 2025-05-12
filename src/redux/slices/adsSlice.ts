@@ -92,9 +92,9 @@ export const postAdThunk = createAsyncThunk(
 
 export const fetchAdsThunk = createAsyncThunk(
   "fetch/ads",
-  async (_, { rejectWithValue }) => {
+  async (skipToken: boolean = false, { rejectWithValue }) => {
     try {
-      const response = await fetchAdsApi();
+      const response = await fetchAdsApi(skipToken);
       return response.data;
     } catch (error: unknown) {
       return rejectWithValue(ResolveError(error) || "Failed to get ads.");

@@ -6,8 +6,8 @@ export const postAdApi = async (payload: PostAdPayload) => {
   return response.data;
 };
 
-export const fetchAdsApi = async () => {
-  const response = await api.get("/ads");
+export const fetchAdsApi = async (skipToken: boolean) => {
+  const response = await api.get("/ads", { headers: { skipToken } });
   return response.data;
 };
 
