@@ -4,6 +4,7 @@ import Image from "next/image";
 import ImageCarousel from "@/components/common/ImageCarousel/ImageCarousel";
 import PreviewAdImage from "@/components/common/PreviewAdImage/PreviewAdImage";
 import { Ad } from "@/types/type";
+import { getPrice } from "@/components/common/AdsCard/AdsCard";
 
 const styles = {
   container: {},
@@ -54,7 +55,7 @@ const styles = {
 };
 
 interface PreviewAdProps {
-  adById: Ad
+  adById: Ad;
 }
 
 const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
@@ -70,9 +71,21 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
     { icon: "/images/notification.svg", alt: "notification", color: "#FEF2F2" },
   ];
   const features = [
-    { icon: "/images/calendar.svg", alt: "calender", amount: adById?.yearOfProduction || "N/A" },
-    { icon: "/images/miles.svg", alt: "miles", amount: adById?.mileage || "N/A" },
-    { icon: "/images/petrol.svg", alt: "petrol", amount: adById?.mileageParameter || "N/A" },
+    {
+      icon: "/images/calendar.svg",
+      alt: "calender",
+      amount: adById?.yearOfProduction || "N/A",
+    },
+    {
+      icon: "/images/miles.svg",
+      alt: "miles",
+      amount: adById?.mileage || "N/A",
+    },
+    {
+      icon: "/images/petrol.svg",
+      alt: "petrol",
+      amount: adById?.mileageParameter || "N/A",
+    },
     { icon: "/images/automatic.svg", alt: "automatic", amount: "Automatic" }, // change adById?.mileageParameter || "N/A"
   ];
   const details = [
@@ -89,13 +102,22 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
       <Grid container sx={styles.gridContainer} spacing={5}>
         <Grid size={{ xs: 12, md: 6 }} sx={styles.imageContainer}>
           {adById ? (
-            adById?.uploadImagesForAd && adById?.uploadImagesForAd.length > 0 ? (
-              <ImageCarousel images={adById?.uploadImagesForAd} setIsPreview={setIsPreview} />
+            adById?.uploadImagesForAd &&
+            adById?.uploadImagesForAd.length > 0 ? (
+              <ImageCarousel
+                images={adById?.uploadImagesForAd}
+                setIsPreview={setIsPreview}
+              />
             ) : (
-              <Typography sx={{ textAlign: "center", pt: 2 }}>No Images Available</Typography>
+              <Typography sx={{ textAlign: "center", pt: 2 }}>
+                No Images Available
+              </Typography>
             )
           ) : (
-            <ImageCarousel images={Array(4).fill("/images/car-sale-1.webp")} setIsPreview={setIsPreview} />
+            <ImageCarousel
+              images={Array(4).fill("/images/car-sale-1.webp")}
+              setIsPreview={setIsPreview}
+            />
           )}
         </Grid>
         <Grid
@@ -110,7 +132,9 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
               gap: 2,
             }}
           >
-            <Typography sx={styles.carTitle}>{`${adById?.itemName || "BMW 520 M Sport"}`}</Typography>
+            <Typography sx={styles.carTitle}>{`${
+              adById?.itemName || "BMW 520 M Sport"
+            }`}</Typography>
             <Stack direction="row" sx={{ gap: 2 }}>
               {stats.map((item, index) => (
                 <Typography sx={styles.statText} key={index}>
@@ -144,7 +168,8 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
             }}
           >
             <Typography sx={styles.carPrice}>
-              {`${adById?.priceCurrency === "EURO" ? "€" : "£"}${adById?.price || "3400"}`}
+              <span style={{fontSize: "16px"}}>PKR </span>
+              {` ${getPrice(adById?.price || 340000)}`}
             </Typography>
             <Stack direction={"row"} spacing={{ xs: 2 }}>
               {actions.map((action, index) => (
@@ -164,7 +189,8 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
             </Stack>
           </Stack>
           <Typography sx={styles.carDescription}>
-            {adById?.descriptions || `Lorem ipsum dolor sit amet 
+            {adById?.descriptions ||
+              `Lorem ipsum dolor sit amet 
             consectetur. Ullamcorper imperdiet fermentum mattis ut blandit mattis pretium magna.`}
           </Typography>
           <Stack
@@ -204,10 +230,11 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
               <Grid
                 sx={{
                   ":nth-child(3n+2)": {
-                    textAlign: "center"
-                  }, ":nth-child(3n)": {
-                    textAlign: "right"
-                  }
+                    textAlign: "center",
+                  },
+                  ":nth-child(3n)": {
+                    textAlign: "right",
+                  },
                 }}
                 key={index}
                 size={{ xs: 4 }}
@@ -226,14 +253,16 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
           </Grid>
         </Grid>
       </Grid>
-      {
-        isPreview &&
+      {isPreview && (
         <PreviewAdImage
-          images={adById?.uploadImagesForAd || Array(4).fill("/images/car-sale-1.webp")}
+          images={
+            adById?.uploadImagesForAd ||
+            Array(4).fill("/images/car-sale-1.webp")
+          }
           setIsPreview={setIsPreview}
           isPreview={isPreview}
         />
-      }
+      )}
     </Box>
   );
 };

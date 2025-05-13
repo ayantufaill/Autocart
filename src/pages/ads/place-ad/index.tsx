@@ -36,7 +36,7 @@ export interface State {
   motStatus: string;
   commercialMake: string;
   commercialModel: string;
-  adImages: File[];
+  // adImages: File[];
   // storyImages: File[];
   yearOfProduction: string;
   engineSize: string;
@@ -54,7 +54,7 @@ const VehicleForm = () => {
   const router = useRouter();
 
   const generateAdPayload = (
-    values: State, // change type
+    values: State,
     adImages: string[]
   ): PostAdPayload => {
     return {
@@ -121,12 +121,6 @@ const VehicleForm = () => {
           `Error uploading images: ${error.message || "Something went wrong."}`
         );
       });
-    // console.log(
-    //   generateAdPayload(
-    //     values,
-    //     formData.adImages.map((item) => URL.createObjectURL(item))
-    //   )
-    // );
   };
 
   const initialValues: State = {
@@ -147,7 +141,6 @@ const VehicleForm = () => {
     yearOfProduction: "",
     engineSize: "",
     loadCapacity: "",
-    adImages: [],
   };
 
   const { values, handleChange, handleSubmit } = useFormik({
@@ -347,8 +340,8 @@ const VehicleForm = () => {
               setFormData={setFormData}
               // handleChange={handleChange}
             />
-            {values.adImages &&
-              values.adImages.map((item, index) => (
+            {formData.adImages &&
+              formData.adImages.map((item, index) => (
                 <ImageListItem
                   sx={{ width: "80px", height: "90px" }}
                   key={index}
@@ -360,7 +353,6 @@ const VehicleForm = () => {
                     height={100}
                     style={{
                       maxWidth: "100%",
-                      height: "auto",
                       borderRadius: 6,
                       objectFit: "cover",
                       maxHeight: "90px",

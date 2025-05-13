@@ -32,6 +32,7 @@ interface ProfileSectionProps {
 const ProfileSection: React.FC<ProfileSectionProps> = ({ userId }) => {
   const dispatch = useAppDispatch();
   const { userById } = useAppSelector((state) => state.user);
+  const { followers, followings } = useAppSelector((state) => state.follower);
   const router = useRouter();
 
   useEffect(() => {
@@ -92,9 +93,21 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ userId }) => {
         }}
       >
         {[
-          { label: "Ad", count: "80", link: "/ads/my-ads" },
-          { label: "Follower", count: "20", link: "/account/followers" },
-          { label: "Following", count: "50", link: "/account/following" },
+          { label: "Ad", count: "2", link: "/ads/my-ads" },
+          {
+            label: "Follower",
+            count: followers?.length,
+            link: userId
+              ? `/account/followers/${userId}`
+              : "/account/followers",
+          },
+          {
+            label: "Following",
+            count: followings?.length,
+            link: userId
+              ? `/account/following/${userId}`
+              : "/account/following",
+          },
         ].map((item, index) => (
           <Stack
             key={index}

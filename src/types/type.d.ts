@@ -31,8 +31,6 @@ export interface PostAdPayload {
   loadCapacity: number;
   yearOfProduction: number;
   engineSize: number;
-  // createdDate: string;
-  // createdTime: string;
 }
 
 export interface Ad extends PostAdPayload {

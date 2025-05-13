@@ -9,13 +9,20 @@ import { useEffect } from "react";
 
 interface FollowersCardProps {
   image: string;
+  name: string;
 }
 
-const Followers = () => {
+interface FollowersProps {
+  userId?: string;
+}
+
+const Followers: React.FC<FollowersProps> = ({ userId }) => {
   const dispatch = useAppDispatch();
-  const { loading, error } = useAppSelector((state) => state.follower);
+  const { loading, error, followers, followings } = useAppSelector(
+    (state) => state.follower
+  );
   useEffect(() => {
-    const id = localStorage.getItem("id");
+    const id = userId || localStorage.getItem("id");
     if (id) {
       dispatch(fetchFollowersByIdThunk(id));
     }
@@ -23,29 +30,41 @@ const Followers = () => {
 
   return (
     <Box sx={{ px: 4 }}>
-      <AdTabs
-        tabData={[
-          {
-            title: "Following",
-            color: "#07B007",
-            isActive: false,
-            link: "/account/following",
-          },
-          {
-            title: "Followers",
-            color: "#07B007",
-            isActive: true,
-            link: "/account/followers",
-          },
-        ]}
-        defaultTab={1}
-      />
+      {!userId && (
+        <AdTabs
+          tabData={[
+            {
+              title: `Following (${followings?.length})`,
+              color: "#07B007",
+              isActive: false,
+              link: userId
+                ? `"/account/following"/${userId}`
+                : "/account/following",
+            },
+            {
+              title: `Followers (${followers?.length})`,
+              color: "#07B007",
+              isActive: true,
+              link: userId
+                ? `"/account/followers"/${userId}`
+                : "/account/followers",
+            },
+          ]}
+          defaultTab={1}
+        />
+      )}
       {loading ? (
         <Loading />
       ) : error ? (
         <ErrorState error={error} />
       ) : (
-        <FollowersCard image="/images/user-image.jpeg" />
+        followers.map((item) => (
+          <FollowersCard
+            key={item?.follower?.id}
+            name={item?.follower?.name}
+            image="/images/user-image.jpeg"
+          />
+        ))
       )}
     </Box>
   );
@@ -53,7 +72,7 @@ const Followers = () => {
 
 export default Followers;
 
-const FollowersCard: React.FC<FollowersCardProps> = ({ image }) => {
+const FollowersCard: React.FC<FollowersCardProps> = ({ image, name }) => {
   return (
     <Stack direction={"row"} spacing={4} sx={{ alignItems: "center", my: 6 }}>
       <Image
@@ -76,7 +95,7 @@ const FollowersCard: React.FC<FollowersCardProps> = ({ image }) => {
         }}
       >
         <Typography sx={{ fontSize: "16px", color: "#1F2937" }}>
-          Theresa Webb
+          {name}
         </Typography>
         <Button
           sx={{

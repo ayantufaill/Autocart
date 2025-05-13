@@ -6,21 +6,13 @@ import StatusAdsCard from "@/components/common/AdsCard/StatusAdsCard";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
+  fetchFollowersByIdThunk,
   // fetchFollowersByIdThunk,
   fetchFollowingByIdThunk,
   followByIdThunk,
   unfollowByIdThunk,
 } from "@/redux/slices/followerSlice";
 import Loading from "@/components/common/Loading/Loading";
-
-// export async function getServerSideProps(context) {
-//   const { id } = context.params;
-
-//   // Fetch data using id, etc.
-//   return {
-//     props: { id }, // Will be passed to the page component as props
-//   };
-// }
 
 interface AccountProps {
   id: string;
@@ -38,15 +30,17 @@ const styles = {
 };
 
 const Account: React.FC<AccountProps> = ({ id = "" }) => {
-  // return <AccountSidebar sidebarOpen={false} />;
   const dispatch = useAppDispatch();
-  const { loading, followings } = useAppSelector((state) => state.follower);
-  const isFollowing = followings.find((item) => item?.following?.id === id);
+  const { loading, followers } = useAppSelector((state) => state.follower);
+  console.log(followers);
+
+  const isFollowing = followers.find(
+    (item) => item?.followerId === localStorage.getItem("id")
+  );
+
+  console.log("followers", followers);
+
   const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const id = localStorage.getItem("id");
-    if (id) dispatch(fetchFollowingByIdThunk(id));
-  }, [dispatch]);
 
   const handleFollow = () => {
     const followerId = localStorage.getItem("id");
@@ -54,13 +48,11 @@ const Account: React.FC<AccountProps> = ({ id = "" }) => {
       dispatch(followByIdThunk({ followerId, followingId: id }))
         .unwrap()
         .then((data) => {
-          dispatch(fetchFollowingByIdThunk(data?.followerId));
+          dispatch(fetchFollowersByIdThunk(id));
         });
     }
   };
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const handleUnfollow = () => {
     const followerId = localStorage.getItem("id");
     if (followerId) {
@@ -68,6 +60,17 @@ const Account: React.FC<AccountProps> = ({ id = "" }) => {
     }
     handleClose();
   };
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  useEffect(() => {
+    const myId = id || localStorage.getItem("id");
+    if (myId) {
+      dispatch(fetchFollowingByIdThunk(myId));
+      dispatch(fetchFollowersByIdThunk(myId));
+    }
+  }, [dispatch]);
 
   return id ? (
     loading ? (
@@ -93,53 +96,11 @@ const Account: React.FC<AccountProps> = ({ id = "" }) => {
               ))}
           </Grid>
         </Stack>
-        <Modal
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+        <UnfollowModal
           open={open}
-          onClose={handleClose}
-        >
-          <Stack
-            justifyContent={"space-between"}
-            sx={{
-              bgcolor: "#FFF",
-              width: "200px",
-              height: "140px",
-              borderRadius: 3,
-              py: 3,
-            }}
-          >
-            <Typography sx={{ fontSize: "14px", textAlign: "center" }}>
-              Are you sure, you want to Unfollow?
-            </Typography>
-            <Stack
-              sx={{ px: 2 }}
-              spacing={2}
-              direction={"row"}
-              justifyContent={"end"}
-            >
-              <Button
-                size="small"
-                sx={{ fontSize: "12px", color: "black" }}
-                variant="text"
-                onClick={handleClose}
-              >
-                No
-              </Button>
-              <Button
-                size="small"
-                sx={{ fontSize: "12px", bgcolor: "#DC2626" }}
-                variant="contained"
-                onClick={handleUnfollow}
-              >
-                Yes
-              </Button>
-            </Stack>
-          </Stack>
-        </Modal>
+          handleClose={handleClose}
+          handleUnfollow={handleUnfollow}
+        />
       </>
     )
   ) : (
@@ -148,3 +109,62 @@ const Account: React.FC<AccountProps> = ({ id = "" }) => {
 };
 
 export default Account;
+
+interface UnfollowModalProps {
+  open: boolean;
+  handleClose: () => void;
+  handleUnfollow: () => void;
+}
+
+const UnfollowModal: React.FC<UnfollowModalProps> = ({
+  open,
+  handleClose,
+  handleUnfollow,
+}) => {
+  const styles = {
+    modal: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    modalWrapper: {
+      bgcolor: "#FFF",
+      width: "200px",
+      height: "140px",
+      borderRadius: 3,
+      py: 3,
+      justifyContent: "space-between",
+    },
+  };
+  return (
+    <Modal sx={styles.modal} open={open} onClose={handleClose}>
+      <Stack sx={styles.modalWrapper}>
+        <Typography sx={{ fontSize: "14px", textAlign: "center" }}>
+          Are you sure, you want to Unfollow?
+        </Typography>
+        <Stack
+          sx={{ px: 2, justifyContent: "flex-end" }}
+          spacing={2}
+          direction={"row"}
+        >
+          <Button
+            size="small"
+            sx={{ fontSize: "12px", color: "black" }}
+            variant="text"
+            onClick={handleClose}
+          >
+            No
+          </Button>
+          <Button
+            size="small"
+            sx={{ fontSize: "12px", bgcolor: "#DC2626" }}
+            variant="contained"
+            onClick={handleUnfollow}
+          >
+            Yes
+          </Button>
+        </Stack>
+      </Stack>
+    </Modal>
+  );
+};

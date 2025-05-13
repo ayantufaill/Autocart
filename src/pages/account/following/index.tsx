@@ -10,21 +10,17 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import { useEffect } from "react";
 
-interface FollowingCardProps {
-  image: string;
-  isFollowing?: boolean;
-  name: string;
-  followingId: string;
-  handleUnfollow: (followingId: string) => void;
+interface FollowingProps {
+  userId: string;
 }
 
-const Following = () => {
+const Following: React.FC<FollowingProps> = ({ userId }) => {
   const dispatch = useAppDispatch();
-  const { loading, error, followings } = useAppSelector(
+  const { loading, error, followings, followers } = useAppSelector(
     (state) => state.follower
   );
   useEffect(() => {
-    const id = localStorage.getItem("id");
+    const id = userId || localStorage.getItem("id");
     if (id) {
       dispatch(fetchFollowingByIdThunk(id));
     }
@@ -39,23 +35,29 @@ const Following = () => {
 
   return (
     <Box sx={{ px: 4 }}>
-      <AdTabs
-        tabData={[
-          {
-            title: "Following",
-            color: "#07B007",
-            isActive: true,
-            link: "/account/following",
-          },
-          {
-            title: "Followers",
-            color: "#07B007",
-            isActive: false,
-            link: "/account/followers",
-          },
-        ]}
-        defaultTab={0}
-      />
+      {!userId && (
+        <AdTabs
+          tabData={[
+            {
+              title: `Following (${followings?.length})`,
+              color: "#07B007",
+              isActive: true,
+              link: userId
+                ? `"/account/following"/${userId}`
+                : "/account/following",
+            },
+            {
+              title: `Followers (${followers?.length})`,
+              color: "#07B007",
+              isActive: false,
+              link: userId
+                ? `"/account/followers"/${userId}`
+                : "/account/followers",
+            },
+          ]}
+          defaultTab={0}
+        />
+      )}
       {loading ? (
         <Loading />
       ) : error ? (
@@ -77,6 +79,14 @@ const Following = () => {
 
 export default Following;
 
+interface FollowingCardProps {
+  image: string;
+  isFollowing?: boolean;
+  name: string;
+  followingId: string;
+  handleUnfollow: (followingId: string) => void;
+}
+
 const FollowingCard: React.FC<FollowingCardProps> = ({
   image,
   isFollowing = true,
@@ -84,6 +94,7 @@ const FollowingCard: React.FC<FollowingCardProps> = ({
   followingId,
   handleUnfollow,
 }) => {
+  const styles = {};
   return (
     <Stack direction={"row"} spacing={4} sx={{ alignItems: "center", my: 6 }}>
       <Image

@@ -44,7 +44,7 @@ const AccountSidebar: React.FC<AccountSidebar> = ({
             borderBottomRightRadius: "30px",
           }}
         >
-          <IconButton onClick={handleClose}>
+          <IconButton disableTouchRipple onClick={handleClose}>
             <Image
               src={"/images/close.svg"}
               alt="close"
@@ -59,7 +59,7 @@ const AccountSidebar: React.FC<AccountSidebar> = ({
               {
                 icon: "/images/profile-icon.png",
                 label: "My Profile",
-                link: "/account",
+                link: "/profile",
               },
               { icon: "/images/ads-icon.png", label: "My Ads", link: "/" },
               { icon: "/images/view-icon.svg", label: "Viewed Ads", link: "/" },

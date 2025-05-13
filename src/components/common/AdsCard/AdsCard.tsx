@@ -6,7 +6,7 @@ import ImageGallery from "../ImageGallery/ImageGallery";
 import { Ad } from "@/types/type";
 import { useRouter } from "next/router";
 
-const getPrice = (price: number) => {
+export const getPrice = (price: number) => {
   if (price < 1e4) {
     return price + "";
   }
@@ -86,7 +86,6 @@ const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
 
   return (
     <Box>
-      {/*  sx={{ display: "flex", flexDirection: "column", gap: "16px" }} */}
       <UserProfileCard
         username={adData?.user?.name}
         role={adData?.user?.role}
@@ -146,7 +145,8 @@ const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
             }}
           >
             <Typography sx={styles.carPrice}>
-              PKR {getPrice(adData?.price)}
+              <span style={{ fontSize: 16 }}>PKR</span>{" "}
+              {getPrice(adData?.price)}
             </Typography>
             {/* <Typography
               sx={{ fontSize: "14px", color: "#9CA3AF", whiteSpace: "nowrap" }}
