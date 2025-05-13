@@ -69,7 +69,9 @@ const Sidebar = () => {
             bgcolor: router.pathname.includes(item.label.toLowerCase())
               ? "#07B007"
               : "transparent",
-            color: router.pathname.includes(item.link) ? "#FFF" : "#6B7280",
+            color: router.pathname.includes(item.link.toLowerCase())
+              ? "#FFF"
+              : "#6B7280",
           }}
         >
           {item.icon}

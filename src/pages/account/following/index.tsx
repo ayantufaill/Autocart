@@ -1,13 +1,42 @@
 import AdTabs from "@/components/common/AdTabs/AdTabs";
+import ErrorState from "@/components/common/ErrorState/ErrorState";
+import Loading from "@/components/common/Loading/Loading";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  fetchFollowingByIdThunk,
+  unfollowByIdThunk,
+} from "@/redux/slices/followerSlice";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import Image from "next/image";
+import { useEffect } from "react";
 
 interface FollowingCardProps {
   image: string;
   isFollowing?: boolean;
+  name: string;
+  followingId: string;
+  handleUnfollow: (followingId: string) => void;
 }
 
 const Following = () => {
+  const dispatch = useAppDispatch();
+  const { loading, error, followings } = useAppSelector(
+    (state) => state.follower
+  );
+  useEffect(() => {
+    const id = localStorage.getItem("id");
+    if (id) {
+      dispatch(fetchFollowingByIdThunk(id));
+    }
+  }, [dispatch]);
+
+  const handleUnfollow = (followingId: string) => {
+    const followerId = localStorage.getItem("id");
+    if (followerId && followingId) {
+      dispatch(unfollowByIdThunk({ followerId, followingId }));
+    }
+  };
+
   return (
     <Box sx={{ px: 4 }}>
       <AdTabs
@@ -27,7 +56,21 @@ const Following = () => {
         ]}
         defaultTab={0}
       />
-      <FollowingCard image="/images/user-image.jpeg" />
+      {loading ? (
+        <Loading />
+      ) : error ? (
+        <ErrorState error={error} />
+      ) : (
+        followings.map((item) => (
+          <FollowingCard
+            key={item?.id}
+            handleUnfollow={handleUnfollow}
+            name={item?.following?.name}
+            image="/images/user-image.jpeg"
+            followingId={item?.following?.id}
+          />
+        ))
+      )}
     </Box>
   );
 };
@@ -37,6 +80,9 @@ export default Following;
 const FollowingCard: React.FC<FollowingCardProps> = ({
   image,
   isFollowing = true,
+  name,
+  followingId,
+  handleUnfollow,
 }) => {
   return (
     <Stack direction={"row"} spacing={4} sx={{ alignItems: "center", my: 6 }}>
@@ -60,9 +106,10 @@ const FollowingCard: React.FC<FollowingCardProps> = ({
         }}
       >
         <Typography sx={{ fontSize: "16px", color: "#1F2937" }}>
-          Theresa Webb
+          {name}
         </Typography>
         <Button
+          onClick={() => handleUnfollow(followingId)}
           sx={{
             fontSize: "12px",
             color: "#000",

@@ -4,8 +4,13 @@ import Loading from "@/components/common/Loading/Loading";
 import ProfileSection from "@/components/common/ProfileSection/ProfileSection";
 import { useAppSelector } from "@/redux/hooks";
 import { Box, Grid } from "@mui/material";
+import { useEffect } from "react";
 
 const ActiveAds = () => {
+  useEffect(() => {
+    console.log(localStorage.getItem("loggedInUser"));
+  }, []);
+
   const { loading } = useAppSelector((state) => state.ads); // because have to read active ads
 
   return loading ? (
@@ -43,10 +48,10 @@ const ActiveAds = () => {
       />
       <Grid spacing={2} sx={{ px: 2 }} container>
         {Array(4)
-        .fill(1)
-        .map((_, index) => (
-          <StatusAdsCard key={index} />
-        ))}
+          .fill(1)
+          .map((_, index) => (
+            <StatusAdsCard key={index} />
+          ))}
       </Grid>
     </Box>
   );

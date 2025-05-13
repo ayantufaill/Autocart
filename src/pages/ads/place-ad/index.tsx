@@ -20,6 +20,29 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 
+export interface State {
+  category: string;
+  phone: string;
+  location: string;
+  currency: string;
+  price: string;
+  description: string;
+  // itemName: string;
+  status: string;
+  adType: string;
+  licenseNumber: string;
+  mileage: string;
+  mileageUnit: string;
+  motStatus: string;
+  commercialMake: string;
+  commercialModel: string;
+  adImages: File[];
+  // storyImages: File[];
+  yearOfProduction: string;
+  engineSize: string;
+  loadCapacity: string;
+}
+
 export interface FormData {
   adImages: File[];
   storyImages: File[];
@@ -31,7 +54,7 @@ const VehicleForm = () => {
   const router = useRouter();
 
   const generateAdPayload = (
-    values: any, // change type
+    values: State, // change type
     adImages: string[]
   ): PostAdPayload => {
     return {
@@ -73,7 +96,7 @@ const VehicleForm = () => {
     storyImages: [],
   });
 
-  const handlePublish = (values: any) => {
+  const handlePublish = (values: State) => {
     dispatch(postImagesThunk(formData.adImages))
       .unwrap()
       .then(({ urls }) => {
@@ -106,7 +129,7 @@ const VehicleForm = () => {
     // );
   };
 
-  const initialValues = {
+  const initialValues: State = {
     category: "",
     phone: "",
     location: "",
@@ -474,7 +497,7 @@ const VehicleForm = () => {
         </Box>
 
         <Button
-          onClick={handlePublish}
+          // onClick={handlePublish}
           type="submit"
           disabled={loading ? true : false}
           variant="contained"

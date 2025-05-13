@@ -3,7 +3,7 @@ import { fetchUserByIdThunk } from "@/redux/slices/userSlice";
 import { Box, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const styles = {
   profileImageWrapper: {
@@ -25,40 +25,27 @@ const styles = {
   },
 };
 
-const ProfileSection: React.FC = () => {
+interface ProfileSectionProps {
+  userId?: string;
+}
+
+const ProfileSection: React.FC<ProfileSectionProps> = ({ userId }) => {
   const dispatch = useAppDispatch();
   const { userById } = useAppSelector((state) => state.user);
-  const [user, setUser] = useState<{ name: string; address: string }>({
-    name: "N/A",
-    address: "N/A",
-  });
+  const router = useRouter();
 
   useEffect(() => {
-    const id = localStorage.getItem("id");
-    const newUser = JSON.parse(localStorage.getItem("loggedInUser") || "");
-
-    setUser({ name: newUser.name, address: newUser?.address });
-
-    if (id && !newUser?.address) {
-      dispatch(fetchUserByIdThunk(id))
-        .unwrap()
-        .then((data) => {
-          localStorage.setItem(
-            "loggedInUser",
-            JSON.stringify({
-              name: data?.name,
-              address: data?.address,
-              email: data?.email,
-            })
-          );
-        });
+    const sendId = userId || localStorage.getItem("id");
+    if (userId !== localStorage.getItem("id")) {
+      if (sendId) dispatch(fetchUserByIdThunk(sendId));
+    } else {
+      router.push("/account");
     }
-  }, [dispatch]);
+  }, [dispatch, userId, router]);
 
-  const router = useRouter();
   return (
     <>
-      <Box sx={{ position: "relative" }}>
+      <Box sx={{ position: "relative", width: "100%" }}>
         <Box sx={styles.coverImageWrapper}>
           <Image
             src={"/images/user-cover-image.svg"}
@@ -89,10 +76,10 @@ const ProfileSection: React.FC = () => {
         <Typography
           sx={{ fontSize: "16px", fontWeight: 600, color: "#1F2937" }}
         >
-          {userById?.name || user?.name}
+          {userById?.name || "N/A"}
         </Typography>
         <Typography sx={{ fontSize: "12px", color: "#9CA3AF" }}>
-          {userById?.address || user?.address}
+          {userById?.address || "N/A"}
         </Typography>
       </Box>
       <Stack

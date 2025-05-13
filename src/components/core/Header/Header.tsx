@@ -6,6 +6,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import EditIcon from "@mui/icons-material/Edit";
 import { Notifications } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
+import AccountSidebar from "@/components/common/AccountSidebar/AccountSidebar";
 
 const styles = {
   container: {
@@ -22,6 +23,7 @@ const styles = {
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const open = Boolean(anchorEl);
   const router = useRouter();
   const { pathname } = router;
@@ -274,6 +276,7 @@ const Header = () => {
             <Button
               onClick={() => {
                 console.log("menu");
+                setSidebarOpen(true);
               }}
               sx={{ minWidth: "auto", color: "#111827" }}
             >
@@ -292,13 +295,17 @@ const Header = () => {
 
             <Button
               onClick={() => {
-                router.push("/account/notifications")
+                router.push("/account/notifications");
               }}
               sx={{ minWidth: "auto", color: "#1F2937" }}
             >
               <Notifications fontSize="small" />
             </Button>
           </Stack>
+          <AccountSidebar
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+          />
         </>
       )}
 

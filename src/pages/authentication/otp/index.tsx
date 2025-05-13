@@ -5,13 +5,12 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { verifyUserThunk, resetAuthState } from "@/redux/slices/authSlice";
 import { toast } from "react-toastify";
 import { RootState } from "@/redux/store";
+import Image from "next/image";
 
 export default function OTPVerification() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { loading, success, error, message } = useAppSelector(
-    (state) => state.auth
-  );
+  const { loading } = useAppSelector((state) => state.auth);
   const { email } = useAppSelector((state: RootState) => state.auth);
 
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -76,10 +75,17 @@ export default function OTPVerification() {
             mb: 4,
           }}
         >
-          <img
+          {/* <img
             src="/Images/Header/logo.png"
             alt="Autocart Logo"
             style={{ height: 60, width: "auto" }}
+          /> */}
+          <Image
+            src={"/images/logo.png"}
+            alt="Autocart-logo"
+            width={60}
+            height={60}
+            style={{ width: "auto" }}
           />
           <Typography variant="h6" fontWeight="bold" color="#15803D">
             AUTOCART

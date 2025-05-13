@@ -1,12 +1,26 @@
 import AdTabs from "@/components/common/AdTabs/AdTabs";
+import ErrorState from "@/components/common/ErrorState/ErrorState";
+import Loading from "@/components/common/Loading/Loading";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { fetchFollowersByIdThunk } from "@/redux/slices/followerSlice";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import Image from "next/image";
+import { useEffect } from "react";
 
 interface FollowersCardProps {
   image: string;
 }
 
 const Followers = () => {
+  const dispatch = useAppDispatch();
+  const { loading, error } = useAppSelector((state) => state.follower);
+  useEffect(() => {
+    const id = localStorage.getItem("id");
+    if (id) {
+      dispatch(fetchFollowersByIdThunk(id));
+    }
+  }, [dispatch]);
+
   return (
     <Box sx={{ px: 4 }}>
       <AdTabs
@@ -26,7 +40,13 @@ const Followers = () => {
         ]}
         defaultTab={1}
       />
-      <FollowersCard image="/images/user-image.jpeg" />
+      {loading ? (
+        <Loading />
+      ) : error ? (
+        <ErrorState error={error} />
+      ) : (
+        <FollowersCard image="/images/user-image.jpeg" />
+      )}
     </Box>
   );
 };
