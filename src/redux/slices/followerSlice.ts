@@ -97,8 +97,7 @@ const followerSlice = createSlice({
       .addCase(fetchFollowersByIdThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.followers = action.payload;
-        if (state.followers?.length === 0)
-          state.error = "No followers. ";
+        if (state.followers?.length === 0) state.error = "No followers. ";
       })
       .addCase(fetchFollowersByIdThunk.rejected, (state, action) => {
         state.loading = false;
@@ -113,8 +112,7 @@ const followerSlice = createSlice({
       .addCase(fetchFollowingByIdThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.followings = action.payload;
-        if (state.followings?.length === 0)
-          state.error = "No followings. ";
+        if (state.followings?.length === 0) state.error = "No followings. ";
       })
       .addCase(fetchFollowingByIdThunk.rejected, (state, action) => {
         state.loading = false;

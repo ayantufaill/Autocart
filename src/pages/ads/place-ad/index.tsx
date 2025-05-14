@@ -58,7 +58,8 @@ const VehicleForm = () => {
     adImages: string[]
   ): PostAdPayload => {
     return {
-      categoryId: "e6841936-a788-45c9-af1b-5c18b4ff31a8",
+      // categoryId: "e6841936-a788-45c9-af1b-5c18b4ff31a8",
+      categoryId: "09586182-8edc-4696-8ce8-f0be502e60dd",
       uploadImagesForAd: adImages,
       uploadImagesForStory: [
         "https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjEwMTMtcC0wMDE5ZC0wMS1rc2k4YjVqbi5qcGc.jpg",
@@ -195,7 +196,7 @@ const VehicleForm = () => {
               <label htmlFor="commercial-make">Make</label>
               <TextField
                 id="commercial-make"
-                placeholder="Enter Commercial Make"
+                placeholder="Enter a commercial make (e.g., Honda)"
                 name="commercialMake"
                 value={values.commercialMake}
                 onChange={handleChange}
@@ -207,7 +208,7 @@ const VehicleForm = () => {
               <label htmlFor="commercial-model">Model</label>
               <TextField
                 id="commercial-model"
-                placeholder="Enter Commercial Model"
+                placeholder="Enter Commercial Model (e.g., Civic)"
                 name="commercialModel"
                 value={values.commercialModel}
                 onChange={handleChange}
@@ -219,12 +220,12 @@ const VehicleForm = () => {
               <label htmlFor="year">Year of Production</label>
               <TextField
                 id="year"
-                placeholder="Enter Year of Production"
+                placeholder="Enter Year of Production (e.g., 2017)"
                 name="yearOfProduction"
                 value={values.yearOfProduction}
                 onChange={handleChange}
                 fullWidth
-                type="number"
+                type="text"
               />
             </Stack>
 
@@ -279,7 +280,7 @@ const VehicleForm = () => {
               <label htmlFor="engine-size">Engine size</label>
               <TextField
                 id="engine-size"
-                placeholder="Enter Engine size"
+                placeholder="Enter Engine size (e.g., 1800)"
                 name="engineSize"
                 value={values.engineSize}
                 onChange={handleChange}
@@ -291,7 +292,7 @@ const VehicleForm = () => {
               <label htmlFor="load-capacity">Load Capacity</label>
               <TextField
                 id="load-capacity"
-                placeholder="Enter Load Capacity"
+                placeholder="Enter Load Capacity (e.g., 850)"
                 name="loadCapacity"
                 value={values.loadCapacity}
                 onChange={handleChange}
@@ -314,54 +315,17 @@ const VehicleForm = () => {
                   </Select>
                 </FormControl>
                 <TextField
-                  placeholder="Enter mileage"
+                  placeholder="Enter mileage (e.g., 1200)"
                   name="mileage"
                   value={values.mileage}
                   onChange={handleChange}
-                  type="number"
+                  type="text"
                   fullWidth
                 />
               </Box>
             </Stack>
           </>
         )}
-
-        {/* Upload Image for ads */}
-        <Stack spacing={1}>
-          <Typography sx={{ color: "#1F2937" }}>Upload Images</Typography>
-          <Typography variant="body2" sx={{ color: "#9CA3AF" }}>
-            You can upload up to 20 images
-          </Typography>
-
-          <ImageList cols={4} gap={8} sx={{ mt: 2, minHeight: "85px" }}>
-            <UploadImage
-              id="uploadAdImage"
-              formData={formData}
-              setFormData={setFormData}
-              // handleChange={handleChange}
-            />
-            {formData.adImages &&
-              formData.adImages.map((item, index) => (
-                <ImageListItem
-                  sx={{ width: "80px", height: "90px" }}
-                  key={index}
-                >
-                  <Image
-                    src={URL.createObjectURL(item)}
-                    alt={`car-image-${index}`}
-                    width={100}
-                    height={100}
-                    style={{
-                      maxWidth: "100%",
-                      borderRadius: 6,
-                      objectFit: "cover",
-                      maxHeight: "90px",
-                    }}
-                  />
-                </ImageListItem>
-              ))}
-          </ImageList>
-        </Stack>
 
         {/* Upload image for stories */}
         {/* <Stack spacing={1}>
@@ -414,7 +378,7 @@ const VehicleForm = () => {
           <label htmlFor="phone">Phone Number</label>
           <TextField
             id="phone"
-            placeholder="Input your Phone number"
+            placeholder="Enter Phone  (e.g., 03001234567)"
             name="phone"
             value={values.phone}
             onChange={handleChange}
@@ -427,7 +391,7 @@ const VehicleForm = () => {
           <label htmlFor="location">Location</label>
           <TextField
             id="location"
-            placeholder="Location"
+            placeholder="Location (e.g., Lahore)"
             name="location"
             value={values.location}
             onChange={handleChange}
@@ -441,11 +405,11 @@ const VehicleForm = () => {
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
             <TextField
               id="price"
-              placeholder="Enter price"
+              placeholder="Enter price (e.g., 1200000)"
               name="price"
               value={values.price}
               onChange={handleChange}
-              type="number"
+              type="text"
               fullWidth
             />
           </Box>
@@ -464,6 +428,42 @@ const VehicleForm = () => {
             rows={4}
             fullWidth
           />
+        </Stack>
+        {/* Upload Image for ads */}
+        <Stack spacing={1}>
+          <Typography sx={{ color: "#1F2937" }}>Upload Images</Typography>
+          <Typography variant="body2" sx={{ color: "#9CA3AF" }}>
+            You can upload up to 20 images
+          </Typography>
+
+          <ImageList cols={4} gap={8} sx={{ mt: 2, minHeight: "85px" }}>
+            <UploadImage
+              id="uploadAdImage"
+              formData={formData}
+              setFormData={setFormData}
+              // handleChange={handleChange}
+            />
+            {formData.adImages &&
+              formData.adImages.map((item, index) => (
+                <ImageListItem
+                  sx={{ width: "80px", height: "90px" }}
+                  key={item?.name}
+                >
+                  <Image
+                    src={URL.createObjectURL(item)}
+                    alt={`car-image-${index}`}
+                    width={100}
+                    height={100}
+                    style={{
+                      maxWidth: "100%",
+                      borderRadius: 6,
+                      objectFit: "cover",
+                      maxHeight: "90px",
+                    }}
+                  />
+                </ImageListItem>
+              ))}
+          </ImageList>
         </Stack>
         {/* Ads details */}
         <Box sx={{ bgcolor: "#F9FAFB", p: { xs: "16px" }, borderRadius: 2 }}>

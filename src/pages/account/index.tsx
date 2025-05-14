@@ -13,6 +13,7 @@ import {
   unfollowByIdThunk,
 } from "@/redux/slices/followerSlice";
 import Loading from "@/components/common/Loading/Loading";
+import { postNotificationThunk } from "@/redux/slices/notificationSlice";
 
 interface AccountProps {
   id: string;
@@ -32,13 +33,10 @@ const styles = {
 const Account: React.FC<AccountProps> = ({ id = "" }) => {
   const dispatch = useAppDispatch();
   const { loading, followers } = useAppSelector((state) => state.follower);
-  console.log(followers);
-
+  const { ads } = useAppSelector((state) => state.ads);
   const isFollowing = followers.find(
     (item) => item?.followerId === localStorage.getItem("id")
   );
-
-  console.log("followers", followers);
 
   const [open, setOpen] = useState(false);
 
@@ -49,6 +47,16 @@ const Account: React.FC<AccountProps> = ({ id = "" }) => {
         .unwrap()
         .then((data) => {
           dispatch(fetchFollowersByIdThunk(id));
+          dispatch(
+            postNotificationThunk({
+              userId: followerId,
+              content: "Started Following you. Do you want to follow back?",
+              link: "Link of any content",
+              type: "NEW_FOLLOWER",
+              isRead: false,
+              isBroadcast: false,
+            })
+          );
         });
     }
   };
@@ -70,6 +78,7 @@ const Account: React.FC<AccountProps> = ({ id = "" }) => {
       dispatch(fetchFollowingByIdThunk(myId));
       dispatch(fetchFollowersByIdThunk(myId));
     }
+    // dispatch() // fetchAllAds
   }, [dispatch]);
 
   return id ? (

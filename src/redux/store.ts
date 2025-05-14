@@ -3,6 +3,7 @@ import authSlice from "./slices/authSlice";
 import adsSlice from "./slices/adsSlice";
 import userSlice from "./slices/userSlice";
 import followerSlice from "./slices/followerSlice";
+import notificationSlice from "./slices/notificationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     ads: adsSlice,
     user: userSlice,
     follower: followerSlice,
+    notifications: notificationSlice,
   },
 });
 

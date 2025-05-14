@@ -59,6 +59,7 @@ export default function LoginPage() {
       dealerLicense: "12345678",
       profileImage: "https://via.placeholder.com/150",
       backgroundImage: "https://via.placeholder.com/150",
+      businessName: "Abc motors",
     };
 
     await dispatch(registerUserThunk(payload));

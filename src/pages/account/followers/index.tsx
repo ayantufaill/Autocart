@@ -10,6 +10,8 @@ import { useEffect } from "react";
 interface FollowersCardProps {
   image: string;
   name: string;
+  isFollowing: boolean;
+  handleClick: () => void;
 }
 
 interface FollowersProps {
@@ -21,6 +23,14 @@ const Followers: React.FC<FollowersProps> = ({ userId }) => {
   const { loading, error, followers, followings } = useAppSelector(
     (state) => state.follower
   );
+  const isFollowing = false; // static
+  const handleFollowBack = () => {
+    console.log("handle follow back ");
+  };
+  const handleUnfollow = () => {
+    console.log("Unfollow if already following");
+  };
+
   useEffect(() => {
     const id = userId || localStorage.getItem("id");
     if (id) {
@@ -63,6 +73,8 @@ const Followers: React.FC<FollowersProps> = ({ userId }) => {
             key={item?.follower?.id}
             name={item?.follower?.name}
             image="/images/user-image.jpeg"
+            isFollowing={isFollowing}
+            handleClick={isFollowing ? handleUnfollow : handleFollowBack}
           />
         ))
       )}
@@ -72,7 +84,12 @@ const Followers: React.FC<FollowersProps> = ({ userId }) => {
 
 export default Followers;
 
-const FollowersCard: React.FC<FollowersCardProps> = ({ image, name }) => {
+const FollowersCard: React.FC<FollowersCardProps> = ({
+  image,
+  name,
+  isFollowing,
+  handleClick,
+}) => {
   return (
     <Stack direction={"row"} spacing={4} sx={{ alignItems: "center", my: 6 }}>
       <Image
@@ -97,7 +114,7 @@ const FollowersCard: React.FC<FollowersCardProps> = ({ image, name }) => {
         <Typography sx={{ fontSize: "16px", color: "#1F2937" }}>
           {name}
         </Typography>
-        <Button
+        {/* <Button
           sx={{
             fontSize: "12px",
             color: "#000",
@@ -108,6 +125,19 @@ const FollowersCard: React.FC<FollowersCardProps> = ({ image, name }) => {
           }}
         >
           Unfollow
+        </Button> */}
+        <Button
+          // onClick={() => handleUnfollow(followingId)}
+          sx={{
+            fontSize: "12px",
+            color: "#000",
+            bgcolor: isFollowing ? "#F9FAFB" : "#EFF6FF",
+            width: isFollowing ? "98px" : "109px",
+            textTransform: "none",
+            borderRadius: 2,
+          }}
+        >
+          {isFollowing ? "Following" : "Follow back"}
         </Button>
       </Stack>
     </Stack>

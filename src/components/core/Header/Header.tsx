@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import EditIcon from "@mui/icons-material/Edit";
-import { Notifications } from "@mui/icons-material";
+import { Notifications, Search } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountSidebar from "@/components/common/AccountSidebar/AccountSidebar";
 
@@ -35,6 +35,7 @@ const Header = () => {
   const previewPostedAd =
     pathname !== "/ads/preview-ad" && pathname.includes("/ads/preview-ad");
   const isAccountPage = pathname.includes("account");
+  const isStoryPage = pathname === "/story";
 
   const handleLogoClick = () => {
     router.push("/");
@@ -337,13 +338,38 @@ const Header = () => {
         </>
       )}
 
+      {isStoryPage && (
+        <>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="flex-end"
+          >
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: "20px",
+                color: "#111827",
+                mr: 15
+              }}
+            >
+              Story
+            </Typography>
+            <Button sx={{ minWidth: "auto", color: "#111827" }}>
+              <Search />
+            </Button>
+          </Stack>
+        </>
+      )}
+
       {/* Other Pages */}
       {!isHomePage &&
         !isPlaceAdPage &&
         !isPreviewAdPage &&
         !isProfilePage &&
         !previewPostedAd &&
-        !isAccountPage && (
+        !isAccountPage &&
+        !isStoryPage && (
           <>
             <Stack sx={{ flexDirection: "row", gap: 2 }}>
               <Button

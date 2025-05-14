@@ -53,7 +53,7 @@ const Sidebar = () => {
     {
       icon: <AutoStoriesOutlinedIcon />,
       label: "Story",
-      link: "/ads/stroy-name",
+      link: "/story",
     },
     { icon: <AccountBoxIcon />, label: "Account", link: "/account" },
   ];
