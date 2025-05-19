@@ -36,6 +36,7 @@ const Header = () => {
     pathname !== "/ads/preview-ad" && pathname.includes("/ads/preview-ad");
   const isAccountPage = pathname.includes("account");
   const isStoryPage = pathname === "/story";
+  const isMyAdsPage = pathname === "/ads/my-ads";
 
   const handleLogoClick = () => {
     router.push("/");
@@ -337,20 +338,15 @@ const Header = () => {
           </Stack>
         </>
       )}
-
       {isStoryPage && (
         <>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="flex-end"
-          >
+          <Stack direction="row" alignItems="center" justifyContent="flex-end">
             <Typography
               sx={{
                 fontWeight: 600,
                 fontSize: "20px",
                 color: "#111827",
-                mr: 15
+                mr: 15,
               }}
             >
               Story
@@ -362,6 +358,33 @@ const Header = () => {
         </>
       )}
 
+      {isMyAdsPage && (
+        <>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Button
+              onClick={handleBack}
+              sx={{ minWidth: "auto", color: "#111827" }}
+            >
+              <ArrowBackIosNewIcon fontSize="small" />
+            </Button>
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: "20px",
+                color: "#111827",
+                mr: 15,
+              }}
+            >
+              My Ads
+            </Typography>
+          </Stack>
+        </>
+      )}
+
       {/* Other Pages */}
       {!isHomePage &&
         !isPlaceAdPage &&
@@ -369,7 +392,8 @@ const Header = () => {
         !isProfilePage &&
         !previewPostedAd &&
         !isAccountPage &&
-        !isStoryPage && (
+        !isStoryPage &&
+        !isMyAdsPage && (
           <>
             <Stack sx={{ flexDirection: "row", gap: 2 }}>
               <Button

@@ -1,16 +1,15 @@
-import { Close } from "@mui/icons-material";
+// import { Close } from "@mui/icons-material";
 import {
   Box,
-  Button,
   Divider,
   Drawer,
   IconButton,
   Stack,
   Typography,
 } from "@mui/material";
+
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
 
 interface AccountSidebar {
   sidebarOpen: boolean;
@@ -21,16 +20,15 @@ const AccountSidebar: React.FC<AccountSidebar> = ({
   sidebarOpen,
   setSidebarOpen,
 }) => {
-  // const [open, setOpen] = useState(false);
   const router = useRouter();
 
   const handleClose = () => {
     setSidebarOpen(false);
   };
 
-  const handleOpen = () => {
-    () => setSidebarOpen(true);
-  };
+  // const handleOpen = () => {
+  //   () => setSidebarOpen(true);
+  // };
 
   return (
     <>

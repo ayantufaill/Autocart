@@ -45,3 +45,55 @@ export interface Ad extends PostAdPayload {
   };
   createDate: string;
 }
+
+export interface Follower {
+  createdAt: string;
+  follower: {
+    address: string;
+    email: string;
+    id: string;
+    name: string;
+    phoneNumber: string;
+    profileImage: string;
+  };
+  followerId: string;
+  followingId: string;
+  id: string;
+  // updatedAt: "2025-05-19T11:09:20.347Z";
+}
+
+export interface Following {
+  createdAt: string;
+  followerId: string;
+  following: {
+    address: string;
+    email: string;
+    id: string;
+    name: string;
+    phoneNumber: string;
+    profileImage: string;
+  };
+  followingId: string;
+  id: string;
+}
+
+export interface Notification {
+  content: string;
+  createdAt: string;
+  id: string;
+  isBroadcast: boolean;
+  isRead: boolean;
+  link: string;
+  type: string;
+  updatedAt: string;
+  userId: string;
+}
+
+export interface notificationPayload {
+  userId: string;
+  content: string;
+  link: string;
+  type: string;
+  isRead: boolean;
+  isBroadcast: boolean;
+}

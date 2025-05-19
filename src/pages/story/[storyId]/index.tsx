@@ -43,16 +43,16 @@ const Index = () => {
 
   const router = useRouter();
   const [progress, setProgress] = useState(0);
-  const [hold, setHold] = useState(false);
+  // const [hold, setHold] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          router.push("/story");
+          // router.push("/story");
           return 0;
         }
-        if (hold) return prev;
+        // if (hold) return prev;
         return prev + 1;
       });
     }, 30);
@@ -65,11 +65,11 @@ const Index = () => {
   return (
     <Box
       sx={styles.wrapper}
-      onMouseUp={(e) => {
-        e.preventDefault();
-        setHold(true);
-        console.log("Mouse hold");
-      }}
+      // onMouseUp={(e) => {
+      //   e.preventDefault();
+      //   setHold(true);
+      //   console.log("Mouse hold");
+      // }}
       onClick={() => setProgress(100)}
     >
       <Image

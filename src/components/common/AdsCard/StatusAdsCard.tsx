@@ -2,22 +2,26 @@ import { Box, Card, CardContent, Grid, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import { Add } from "@mui/icons-material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { Ad } from "@/types/type";
+import { getPrice } from "./AdsCard";
 
 interface StatusAdsCardProps {
   status?: string;
   isLikedAd?: boolean;
+  data: Ad;
 }
 
 const StatusAdsCard: React.FC<StatusAdsCardProps> = ({
   status = "Active",
   isLikedAd,
+  data,
 }) => {
   return (
     <Grid size={{ xs: 6, sm: 4, md: 3 }} sx={{ position: "relative" }}>
       <Card sx={{ boxShadow: 0, border: "1px solid #9CA3AF" }}>
         {/* <CardMedia image="/images/car-sale.webp" /> */}
         <Image
-          src={"/images/car-sale-1.webp"}
+          src={data?.uploadImagesForAd?.[0] || "/images/car-sale-1.webp"}
           alt="ad-image"
           width={200}
           height={200}
@@ -41,12 +45,16 @@ const StatusAdsCard: React.FC<StatusAdsCardProps> = ({
                 color: isLikedAd ? "#1F2937" : "#07B007",
               }}
             >
-              Honda City
+              {data?.commercialsMake +
+                " " +
+                data?.commercialModel +
+                " " +
+                data?.yearOfProduction || "Honda City"}
             </Typography>
             {isLikedAd && <FavoriteIcon fontSize="small" color="error" />}
           </Stack>
           <Typography sx={{ fontSize: "14px", color: "#9CA3AF" }}>
-            PKR 27.3 lacs
+            {getPrice(data?.price)}
           </Typography>
           {status === "Expired" ? (
             <Stack direction={"row"} justifyContent={"space-between"}>
@@ -98,7 +106,7 @@ const StatusAdsCard: React.FC<StatusAdsCardProps> = ({
           }}
         >
           {/* <Image src={""} alt="" width={} height={} /> */}
-          <Box
+          {/* <Box
             sx={{
               width: 20,
               height: 20,
@@ -112,7 +120,7 @@ const StatusAdsCard: React.FC<StatusAdsCardProps> = ({
             }}
           >
             12
-          </Box>
+          </Box> */}
         </Stack>
       </Card>
     </Grid>

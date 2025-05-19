@@ -4,7 +4,7 @@ import Loading from "@/components/common/Loading/Loading";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { fetchAdsThunk, fetchSearchAdsThunk } from "@/redux/slices/adsSlice";
 import { Search } from "@mui/icons-material";
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 
 const styles = {
@@ -28,7 +28,9 @@ const Index = () => {
   const { ads, loading, error } = useAppSelector((state) => state.ads);
 
   useEffect(() => {
-    if (!filteredAds) {
+    if (filteredAds) {
+      dispatch(fetchSearchAdsThunk({ search: filteredAds }));
+    } else {
       dispatch(fetchAdsThunk(false));
     }
   }, [filteredAds, dispatch]);
@@ -46,15 +48,13 @@ const Index = () => {
           placeholder="Search Ads"
           style={styles.input}
         />
-        <Button
+        {/* <Button
           size="small"
           sx={{ textTransform: "none", bgcolor: "#07B007", color: "#FFF" }}
-          onClick={() => {
-            dispatch(fetchSearchAdsThunk({ search: filteredAds }));
-          }}
+          onClick={() => {}}
         >
           Search
-        </Button>
+        </Button> */}
       </Stack>
 
       {loading ? (

@@ -1,19 +1,15 @@
 import {
   Box,
   Divider,
-  Grid,
-  LinearProgress,
-  Modal,
   Stack,
   Typography,
 } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 
 const Story = () => {
   const router = useRouter();
-  const [previewStory, setPreviewStory] = useState(false);
+  // const [previewStory, setPreviewStory] = useState(false);
   //   const handleOpen = () => setPreviewStory(true);
   const handleOpen = () => router.push("/story/1");
 

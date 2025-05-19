@@ -1,10 +1,19 @@
-import React from "react";
-import { Box, Grid, IconButton, Stack, Typography } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Box,
+  Grid,
+  IconButton,
+  Snackbar,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
 import UserProfileCard from "../UserProfileCard/UserProfileCard";
 import ImageGallery from "../ImageGallery/ImageGallery";
 import { Ad } from "@/types/type";
 import { useRouter } from "next/router";
+import { Check } from "@mui/icons-material";
+import ShareAdModal from "./ShareModal";
 
 export const getPrice = (price: number) => {
   if (price < 1e4) {
@@ -43,7 +52,7 @@ const styles = {
     ":hover": { color: "#253347" },
   },
   carPrice: {
-    fontSize: { xs: "24px" },
+    fontSize: { xs: "20px" },
     fontWeight: 600,
     color: "#07B007",
   },
@@ -73,16 +82,47 @@ interface AdsCardProps {
 
 const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+
   const stats = [
-    { amount: adData?.likes || 0, icon: "/images/likes.svg" },
-    { amount: adData?.views || 0, icon: "/images/view-icon.svg" },
-    { amount: adData?.shares || 0, icon: "/images/share-icon.svg" },
+    // { amount: adData?.likes || 0, icon: "/images/likes.svg" },
+    // { amount: adData?.views || 0, icon: "/images/view-icon.svg" },
+    {
+      amount: adData?.shares || 0,
+      icon: "/images/share-icon.svg",
+      handleClick: () => {
+        setShareOpen(true);
+      },
+    },
   ];
   const actions = [
-    { icon: "/images/call-icon.svg", alt: "call", color: "#EFF6FF" },
-    { icon: "/images/message.svg", alt: "message", color: "#F0FDFA" },
-    { icon: "/images/notification.svg", alt: "notification", color: "#FEF2F2" },
+    {
+      icon: "/images/call-icon.svg",
+      alt: "call",
+      color: "#EFF6FF",
+      handleClick: () => copyToClipBoard(adData?.phoneNumber),
+    },
+    {
+      icon: "/images/message.svg",
+      alt: "message",
+      color: "#F0FDFA",
+      handleClick: () => {},
+    },
+    // { icon: "/images/notification.svg", alt: "notification", color: "#FEF2F2" },
   ];
+
+  const copyToClipBoard = (phone: string) => {
+    navigator.clipboard.writeText(phone);
+    // toast.success()
+    setOpen(true);
+  };
+
+  const handleClose = () => setOpen(false);
+
+  const action = (
+    <Check sx={{ color: "#FFF", bgcolor: "#07B007", borderRadius: "50%" }} />
+  );
 
   return (
     <Box>
@@ -114,15 +154,17 @@ const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
             </Typography>
             <Stack direction="row" sx={{ gap: 2 }}>
               {stats.map((item, index) => (
-                <Typography sx={styles.statText} key={index}>
-                  <Image
-                    src={item.icon}
-                    alt={item.icon}
-                    width={18}
-                    height={18}
-                  />
-                  {item.amount}
-                </Typography>
+                <Stack key={index} direction={"row"} alignItems={"center"}>
+                  <IconButton onClick={item.handleClick}>
+                    <Image
+                      src={item.icon}
+                      alt={item.icon}
+                      width={18}
+                      height={18}
+                    />
+                  </IconButton>
+                  <Typography sx={styles.statText}>{item.amount}</Typography>
+                </Stack>
               ))}
             </Stack>
           </Box>
@@ -145,20 +187,16 @@ const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
             }}
           >
             <Typography sx={styles.carPrice}>
-              <span style={{ fontSize: 16 }}>PKR</span>{" "}
+              <span style={{ fontSize: 14 }}>PKR</span>{" "}
               {getPrice(adData?.price)}
             </Typography>
-            {/* <Typography
-              sx={{ fontSize: "14px", color: "#9CA3AF", whiteSpace: "nowrap" }}
-            >
-              From $430/mo
-            </Typography> */}
-            <Stack direction={"row"} spacing={4}>
+            <Stack direction={"row"} spacing={2}>
               {actions.map((action, index) => (
                 <IconButton
                   key={index}
                   size="small"
                   sx={{ bgcolor: action.color, borderRadius: 1 }}
+                  onClick={action.handleClick}
                 >
                   <Image
                     src={action.icon}
@@ -169,12 +207,27 @@ const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
                 </IconButton>
               ))}
             </Stack>
+            <Snackbar
+              sx={{ width: "250px", mx: "auto" }}
+              open={open}
+              autoHideDuration={4000}
+              onClose={handleClose}
+              action={action}
+              message="Phone number copied!"
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            />
           </Stack>
           <Typography sx={styles.carDescription}>
             {adData?.descriptions}
           </Typography>
         </Grid>
       </Grid>
+      <ShareAdModal
+        open={shareOpen}
+        handleClose={() => {
+          setShareOpen(false);
+        }}
+      />
     </Box>
   );
 };

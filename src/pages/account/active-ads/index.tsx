@@ -11,7 +11,7 @@ const ActiveAds = () => {
     console.log(localStorage.getItem("loggedInUser"));
   }, []);
 
-  const { loading } = useAppSelector((state) => state.ads); // because have to read active ads
+  const { loading, ads } = useAppSelector((state) => state.ads);
 
   return loading ? (
     <Loading />
@@ -47,11 +47,9 @@ const ActiveAds = () => {
         ]}
       />
       <Grid spacing={2} sx={{ px: 2 }} container>
-        {Array(4)
-          .fill(1)
-          .map((_, index) => (
-            <StatusAdsCard key={index} />
-          ))}
+        {ads.map((item, index) => (
+          <StatusAdsCard key={index} data={item} />
+        ))}
       </Grid>
     </Box>
   );

@@ -45,8 +45,8 @@ const RejectedAds = () => {
       <Grid spacing={2} sx={{ px: 2 }} container>
         {Array(4)
         .fill(1)
-        .map((_, index) => (
-          <StatusAdsCard key={index} />
+        .map((item, index) => (
+          <StatusAdsCard data={item} key={index} />
         ))}
       </Grid>
     </Box>

@@ -1,19 +1,18 @@
-// import AccountSidebar from "@/components/common/AccountSidebar/AccountSidebar";
 import ProfileSection from "@/components/common/ProfileSection/ProfileSection";
 import ActiveAds from "./active-ads";
-import { Stack, Button, Grid, Modal, Box, Typography } from "@mui/material";
+import { Stack, Button, Grid, Modal, Typography } from "@mui/material";
 import StatusAdsCard from "@/components/common/AdsCard/StatusAdsCard";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   fetchFollowersByIdThunk,
-  // fetchFollowersByIdThunk,
   fetchFollowingByIdThunk,
   followByIdThunk,
   unfollowByIdThunk,
 } from "@/redux/slices/followerSlice";
 import Loading from "@/components/common/Loading/Loading";
 import { postNotificationThunk } from "@/redux/slices/notificationSlice";
+import { fetchAdsThunk } from "@/redux/slices/adsSlice";
 
 interface AccountProps {
   id: string;
@@ -46,6 +45,7 @@ const Account: React.FC<AccountProps> = ({ id = "" }) => {
       dispatch(followByIdThunk({ followerId, followingId: id }))
         .unwrap()
         .then((data) => {
+          console.log(data);
           dispatch(fetchFollowersByIdThunk(id));
           dispatch(
             postNotificationThunk({
@@ -77,9 +77,9 @@ const Account: React.FC<AccountProps> = ({ id = "" }) => {
     if (myId) {
       dispatch(fetchFollowingByIdThunk(myId));
       dispatch(fetchFollowersByIdThunk(myId));
+      dispatch(fetchAdsThunk(false));
     }
-    // dispatch() // fetchAllAds
-  }, [dispatch]);
+  }, [id, dispatch]);
 
   return id ? (
     loading ? (
@@ -98,11 +98,9 @@ const Account: React.FC<AccountProps> = ({ id = "" }) => {
             {isFollowing ? "Unfollow" : "Follow"}
           </Button>
           <Grid spacing={2} sx={{ px: 2 }} container>
-            {Array(4)
-              .fill(1)
-              .map((_, index) => (
-                <StatusAdsCard key={index} />
-              ))}
+            {ads.map((item, index) => (
+              <StatusAdsCard data={item} key={index} />
+            ))}
           </Grid>
         </Stack>
         <UnfollowModal

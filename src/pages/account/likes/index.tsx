@@ -6,8 +6,8 @@ const Likes = () => {
     <Grid spacing={2} sx={{ px: 2, pt: "24px", pb: 12 }} container>
       {Array(4)
         .fill(1)
-        .map((_, index) => (
-          <StatusAdsCard key={index} isLikedAd={true} />
+        .map((item, index) => (
+          <StatusAdsCard data={item} key={index} isLikedAd={true} />
         ))}
     </Grid>
   );

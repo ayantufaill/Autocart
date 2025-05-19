@@ -36,7 +36,7 @@ const Followers: React.FC<FollowersProps> = ({ userId }) => {
     if (id) {
       dispatch(fetchFollowersByIdThunk(id));
     }
-  }, [dispatch]);
+  }, [userId, dispatch]);
 
   return (
     <Box sx={{ px: 4 }}>
@@ -90,6 +90,7 @@ const FollowersCard: React.FC<FollowersCardProps> = ({
   isFollowing,
   handleClick,
 }) => {
+  console.log(handleClick);
   return (
     <Stack direction={"row"} spacing={4} sx={{ alignItems: "center", my: 6 }}>
       <Image

@@ -6,7 +6,9 @@ import {
   unfollowByIdApi,
 } from "../api/followerApi";
 import { ResolveError } from "./adsSlice";
+
 import { toast } from "react-toastify";
+import { Follower, Following } from "@/types/type";
 
 // interface Follower {}
 // interface Following {
@@ -16,8 +18,8 @@ import { toast } from "react-toastify";
 interface FollowerState {
   loading: boolean;
   error: string | null;
-  followers: any[];
-  followings: any[];
+  followers: Follower[];
+  followings: Following[];
 }
 
 const initialState: FollowerState = {
@@ -88,7 +90,6 @@ const followerSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // Fetch Followers
     builder
       .addCase(fetchFollowersByIdThunk.pending, (state) => {
         state.loading = true;
@@ -128,15 +129,16 @@ const followerSlice = createSlice({
         toast.error(state.error);
       })
       // unfollow by id
-      .addCase(unfollowByIdThunk.pending, (state, action) => {})
-      .addCase(unfollowByIdThunk.fulfilled, (state, action) => {
+      .addCase(unfollowByIdThunk.pending, () => {})
+      .addCase(unfollowByIdThunk.fulfilled, (state) => {
         state.followers = state.followers.filter(
           (item) => item?.followerId != localStorage.getItem("id")
         );
         if (state.followings?.length === 0) state.error = "No Following found";
       })
       .addCase(unfollowByIdThunk.rejected, (state, action) => {
-        toast.error(action.payload as string);
+        state.error = action.payload as string;
+        toast.error(state.error);
       });
   },
 });

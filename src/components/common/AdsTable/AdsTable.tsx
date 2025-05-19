@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import {
   Table,
@@ -14,16 +14,19 @@ import { Ad } from "@/types/type";
 import { Delete } from "@mui/icons-material";
 import { deleteAdByIdThunk } from "@/redux/slices/adsSlice";
 import { useAppDispatch } from "@/redux/hooks";
+import DeleteAdModal from "./DeleteAdModal";
 interface AdsTableProps {
   ads: Ad[];
 }
 
 const AdsTable: React.FC<AdsTableProps> = ({ ads }) => {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
 
   const handleDeleteAd = (id: string) => {
     dispatch(deleteAdByIdThunk(id));
+    setOpen(false);
   };
 
   return (
@@ -173,10 +176,16 @@ const AdsTable: React.FC<AdsTableProps> = ({ ads }) => {
                 >
                   {ad?.yearOfProduction || "N/A"}
                 </TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleDeleteAd(ad?.id)}>
-                    <Delete />
+                <TableCell sx={{ borderLeft: "0.5px solid #CACACA" }}>
+                  <IconButton onClick={() => setOpen(true)}>
+                    <Delete sx={{ color: "#DC2626" }} />
                   </IconButton>
+                  {/* Delete Ad Modal */}
+                  <DeleteAdModal
+                    open={open}
+                    handleClose={() => setOpen(false)}
+                    handleDelete={() => handleDeleteAd(ad?.id)}
+                  />
                 </TableCell>
               </TableRow>
             ))}

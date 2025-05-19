@@ -19,12 +19,13 @@ const Following: React.FC<FollowingProps> = ({ userId }) => {
   const { loading, error, followings, followers } = useAppSelector(
     (state) => state.follower
   );
+
   useEffect(() => {
     const id = userId || localStorage.getItem("id");
     if (id) {
       dispatch(fetchFollowingByIdThunk(id));
     }
-  }, [dispatch]);
+  }, [dispatch, userId]);
 
   const handleUnfollow = (followingId: string) => {
     const followerId = localStorage.getItem("id");
@@ -43,7 +44,7 @@ const Following: React.FC<FollowingProps> = ({ userId }) => {
               color: "#07B007",
               isActive: true,
               link: userId
-                ? `"/account/following"/${userId}`
+                ? `/account/following/${userId}`
                 : "/account/following",
             },
             {
@@ -51,7 +52,7 @@ const Following: React.FC<FollowingProps> = ({ userId }) => {
               color: "#07B007",
               isActive: false,
               link: userId
-                ? `"/account/followers"/${userId}`
+                ? `/account/followers/${userId}`
                 : "/account/followers",
             },
           ]}
@@ -62,7 +63,7 @@ const Following: React.FC<FollowingProps> = ({ userId }) => {
         <Loading />
       ) : error ? (
         <ErrorState error={error} />
-      ) : (
+      ) : followings && followings.length > 0 ? (
         followings.map((item) => (
           <FollowingCard
             key={item?.id}
@@ -72,6 +73,8 @@ const Following: React.FC<FollowingProps> = ({ userId }) => {
             followingId={item?.following?.id}
           />
         ))
+      ) : (
+        <Typography>No followings found</Typography>
       )}
     </Box>
   );
@@ -94,7 +97,6 @@ const FollowingCard: React.FC<FollowingCardProps> = ({
   followingId,
   handleUnfollow,
 }) => {
-  const styles = {};
   return (
     <Stack direction={"row"} spacing={4} sx={{ alignItems: "center", my: 6 }}>
       <Image

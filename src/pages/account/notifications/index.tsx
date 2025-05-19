@@ -1,4 +1,7 @@
-import Loading from "@/components/common/Loading/Loading";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   fetchFollowersByIdThunk,
@@ -8,18 +11,16 @@ import {
   FetchNotificationsThunk,
   postNotificationThunk,
 } from "@/redux/slices/notificationSlice";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import Loading from "@/components/common/Loading/Loading";
 import { formatDistanceToNow } from "date-fns";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Follower } from "@/types/type";
 
 interface NotificationCardProps {
   data: {
-    image: string;
-    name: string;
+    // image: string;
+    // name: string;
     content: string;
-    time: string;
+    // time: string;
     type: string;
     userId: string;
     createdAt: string;
@@ -28,22 +29,34 @@ interface NotificationCardProps {
 
 const Notifications = () => {
   const dispatch = useAppDispatch();
+  const [myId, setMyId] = useState<string | null>(null);
   const { loading, notifications } = useAppSelector(
     (state) => state.notifications
   );
 
-  const myId = localStorage.getItem("id");
-
   useEffect(() => {
     dispatch(FetchNotificationsThunk());
-  }, []);
+    const id = localStorage.getItem("id");
+    if (id) setMyId(id);
+  }, [dispatch]);
+
   return loading ? (
     <Loading />
   ) : (
     <Box>
       {notifications.map(
         (item, index) =>
-          item?.userId != myId && <NotificationCard key={index} data={item} />
+          item?.userId !== myId && (
+            <NotificationCard
+              key={index}
+              data={{
+                content: item?.content,
+                createdAt: item?.createdAt,
+                type: item?.type,
+                userId: item?.userId,
+              }}
+            />
+          )
       )}
     </Box>
   );
@@ -55,8 +68,10 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ data }) => {
   const dispatch = useAppDispatch();
   const { followers } = useAppSelector((state) => state.follower);
   const [showBtn, setShowBtn] = useState(true);
-  const [isFollowing, setIsFollowing] = useState(
-    followers.find((item) => item?.followerId === localStorage.getItem("id"))
+  const [isFollowing, setIsFollowing] = useState<boolean>(
+    followers.find((item: Follower) => item?.id === localStorage.getItem("id"))
+      ? true
+      : false
   );
 
   const handleAccept = () => {
@@ -84,6 +99,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ data }) => {
         });
     }
   };
+
   const handleReject = () => {
     setShowBtn(false);
   };
@@ -93,14 +109,15 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ data }) => {
       .unwrap()
       .then((followers) => {
         const id = localStorage.getItem("id");
-        setIsFollowing(followers.find((item: any) => item?.followerId === id));
+        setIsFollowing(followers.find((item: Follower) => item?.id === id));
       });
-  }, []);
+  }, [data?.userId, dispatch]);
 
   return (
     <Stack direction={"row"} spacing={2} sx={{ px: 4, my: 6 }}>
       <Image
-        src={data?.image || "/images/user-image.jpeg"}
+        // src={data?.image || "/images/user-image.jpeg"}
+        src={"/images/user-image.jpeg"}
         alt="user-image"
         width={40}
         height={40}
@@ -128,7 +145,8 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ data }) => {
               color: "#1F2937",
             }}
           >
-            {data?.name || "Ali"}
+            {/* {data?.name || "Ali"} */}
+            {"Ali"}
           </Link>
           <Typography sx={{ fontSize: "10px", color: "#9CA3AF" }}>
             {data?.content}

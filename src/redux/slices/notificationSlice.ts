@@ -4,11 +4,12 @@ import {
   postNotificationsApi,
 } from "../api/notificationApi";
 import { ResolveError } from "./adsSlice";
+import { Notification, notificationPayload } from "@/types/type";
 
 interface NotificationState {
   loading: boolean;
   error: string | null;
-  notifications: any[];
+  notifications: Notification[];
 }
 
 const initialState: NotificationState = {
@@ -31,7 +32,7 @@ export const FetchNotificationsThunk = createAsyncThunk(
 
 export const postNotificationThunk = createAsyncThunk(
   "post/notification",
-  async (notificationPayload: any, { rejectWithValue }) => {
+  async (notificationPayload: notificationPayload, { rejectWithValue }) => {
     try {
       const response = await postNotificationsApi(notificationPayload);
       return response.data;
@@ -47,7 +48,7 @@ const notificationSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(FetchNotificationsThunk.pending, (state, action) => {
+      .addCase(FetchNotificationsThunk.pending, (state) => {
         state.loading = true;
       })
       .addCase(FetchNotificationsThunk.fulfilled, (state, action) => {
@@ -59,7 +60,7 @@ const notificationSlice = createSlice({
         state.error = action.payload as string;
       })
       //   post notification
-      .addCase(postNotificationThunk.pending, (state, action) => {
+      .addCase(postNotificationThunk.pending, (state) => {
         state.loading = true;
       })
       .addCase(postNotificationThunk.fulfilled, (state, action) => {

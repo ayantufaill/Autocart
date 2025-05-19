@@ -44,10 +44,10 @@ const ExpiredAds = () => {
       />
       <Grid spacing={2} sx={{ px: 2 }} container>
         {Array(4)
-        .fill(1)
-        .map((_, index) => (
-          <StatusAdsCard key={index} status="Expired" />
-        ))}
+          .fill(1)
+          .map((item, index) => (
+            <StatusAdsCard data={item} key={index} status="Expired" />
+          ))}
       </Grid>
     </Box>
   );
