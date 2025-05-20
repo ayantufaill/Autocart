@@ -17,15 +17,19 @@ import { useRouter } from "next/router";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import {
+  postProfileImageThunk,
   registerUserThunk,
   resetAuthState,
   setAuthEmail,
 } from "@/redux/slices/authSlice";
 import Image from "next/image";
+import { AddAPhoto } from "@mui/icons-material";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const [profileImage, setProfileImage] = useState<File | null>(null);
 
   const { loading, success, error } = useAppSelector(
     (state: RootState) => state.auth
@@ -51,18 +55,39 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async () => {
-    const payload = {
-      ...formData,
-      //   role: "",
-      address: "Lahore",
-      vatNumber: "1234567",
-      dealerLicense: "12345678",
-      profileImage: "https://via.placeholder.com/150",
-      backgroundImage: "https://via.placeholder.com/150",
-      businessName: "Abc motors",
-    };
+    if (profileImage) {
+      dispatch(postProfileImageThunk(profileImage))
+        .unwrap()
+        .then(async (data) => {
+          const payload = {
+            ...formData,
+            //   role: "",
+            address: "Lahore",
+            vatNumber: "1234567",
+            dealerLicense: "12345678",
+            profileImage: data?.url || "https://via.placeholder.com/150",
+            backgroundImage: "https://via.placeholder.com/150",
+            businessName: "Abc motors",
+          };
 
-    await dispatch(registerUserThunk(payload));
+          await dispatch(registerUserThunk(payload));
+        });
+    } else {
+      toast.error("Please input profile image");
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    const file = e.target?.files?.[0];
+    if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        e.target.value = "";
+        toast.error("File size exceeded. ");
+        return;
+      }
+      setProfileImage(file);
+    }
   };
 
   useEffect(() => {
@@ -80,7 +105,7 @@ export default function LoginPage() {
   return (
     <Box
       sx={{
-        height: "100vh",
+        // height: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -312,6 +337,56 @@ export default function LoginPage() {
               "&.Mui-focused fieldset": { borderColor: "#F9F9F9 !important" },
             }}
           />
+          {/* Upload Profile Image */}
+          <Typography
+            fontWeight="medium"
+            fontSize={14}
+            mt={2}
+            mb={1}
+            sx={{ color: "#15803D" }}
+          >
+            Upload Profile Image
+          </Typography>
+          <Box
+            sx={{
+              border: "1px solid #9CA3AF",
+              borderRadius: 1,
+              width: "80px",
+              height: "80px",
+              overflow: "hidden",
+              mb: 2,
+            }}
+          >
+            <label
+              htmlFor="profile"
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {!profileImage && <AddAPhoto sx={{ color: "#9CA3AF" }} />}
+              {profileImage && (
+                <Image
+                  src={URL.createObjectURL(profileImage)}
+                  alt="profile"
+                  width={80}
+                  height={80}
+                  style={{ objectFit: "cover" }}
+                />
+              )}
+            </label>
+            <input
+              id={"profile"}
+              type="file"
+              hidden
+              onChange={handleImageChange}
+              multiple
+              accept="image/jpeg, image/png, image/gif, image/webp, image/svg+xml, image/bmp, image/tiff"
+            />
+          </Box>
         </Box>
         {error && (
           <Typography color="error" mt={1} fontSize="14px">
@@ -345,6 +420,7 @@ export default function LoginPage() {
             Sign In
           </Link>
         </Typography>
+
         <Snackbar
           open={showToast}
           autoHideDuration={2000}

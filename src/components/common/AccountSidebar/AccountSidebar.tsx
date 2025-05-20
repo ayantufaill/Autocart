@@ -111,11 +111,14 @@ const AccountSidebar: React.FC<AccountSidebar> = ({
               icon: "/images/logout-icon.png",
               label: "Log out",
               handleClick: () => {
+                console.log("logout");
                 localStorage.clear();
+                router.push("/authentication/sign-in");
               },
             },
           ].map((item, index) => (
             <Stack
+              onClick={item.handleClick}
               direction={"row"}
               spacing={2}
               sx={{ px: 4, mt: "26px", alignItems: "center" }}

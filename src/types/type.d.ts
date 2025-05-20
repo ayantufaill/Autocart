@@ -42,6 +42,7 @@ export interface Ad extends PostAdPayload {
     name: string;
     role: string;
     id: string;
+    profileImage: string;
   };
   createDate: string;
 }

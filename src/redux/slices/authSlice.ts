@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { loginUserApi, registerUserApi, verifyUserApi } from "../api/authApi";
+import {
+  loginUserApi,
+  postProfileImageApi,
+  registerUserApi,
+  verifyUserApi,
+} from "../api/authApi";
 import { ResolveError } from "./adsSlice";
 import { registerUser } from "@/types/type";
 
@@ -32,9 +37,7 @@ export const registerUserThunk = createAsyncThunk(
       const response = await registerUserApi(payload);
       return response.data;
     } catch (err: unknown) {
-      return rejectWithValue(
-        ResolveError(err) || "Failed to register."
-      );
+      return rejectWithValue(ResolveError(err) || "Failed to register.");
     }
   }
 );
@@ -47,9 +50,7 @@ export const verifyUserThunk = createAsyncThunk(
       localStorage.setItem("token", response.data.token);
       return response.data;
     } catch (err: unknown) {
-      return rejectWithValue(
-        ResolveError(err) || "OTP verification failed."
-      );
+      return rejectWithValue(ResolveError(err) || "OTP verification failed.");
     }
   }
 );
@@ -59,6 +60,18 @@ export const loginUserThunk = createAsyncThunk(
   async (payload: { email: string; password: string }, { rejectWithValue }) => {
     try {
       const response = await loginUserApi(payload);
+      return response;
+    } catch (err: unknown) {
+      return rejectWithValue(ResolveError(err) || "Login failed.");
+    }
+  }
+);
+
+export const postProfileImageThunk = createAsyncThunk(
+  "post/profileImage",
+  async (image: File, { rejectWithValue }) => {
+    try {
+      const response = await postProfileImageApi(image);
       return response;
     } catch (err: unknown) {
       return rejectWithValue(ResolveError(err) || "Login failed.");

@@ -1,7 +1,10 @@
-import { Button, Modal, Stack, Typography } from "@mui/material";
+import { Button, Modal, Snackbar, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import LinkIcon from "@mui/icons-material/Link";
+import Link from "next/link";
+import { Check } from "@mui/icons-material";
+import { useState } from "react";
 
 interface ShareAdModalProps {
   open: boolean;
@@ -14,6 +17,7 @@ const ShareAdModal: React.FC<ShareAdModalProps> = ({
   handleClose,
   //   handleDelete,
 }) => {
+  const [SnackbarOpen, setSnackbarOpen] = useState(false);
   const router = useRouter();
   const styles = {
     modal: {
@@ -52,6 +56,10 @@ const ShareAdModal: React.FC<ShareAdModalProps> = ({
     { icon: "/images/x-icon.svg", title: "X", link: "https://www.x.com" },
   ];
 
+  const action = (
+    <Check sx={{ color: "#FFF", bgcolor: "#07B007", borderRadius: "50%" }} />
+  );
+
   return (
     <Modal sx={styles.modal} open={open} onClose={handleClose}>
       <Stack sx={styles.modalWrapper}>
@@ -77,19 +85,63 @@ const ShareAdModal: React.FC<ShareAdModalProps> = ({
           ))}
         </Stack>
 
-        <Stack>
-          <input
+        <Stack
+          direction={"row"}
+          sx={{
+            border: "1px solid #CACACA",
+            borderRadius: "8px",
+            px: "16px",
+            justifyContent: "space-between",
+            alignItems: "center",
+            py: "10px",
+          }}
+        >
+          <Link
+            onClick={handleClose}
+            href={"/"}
             style={{
-              border: "1px solid #CACACA",
-              outline: "none",
-              height: "33px",
+              textDecoration: "none",
+              color: "#9CA3AF",
+              fontSize: "14px",
             }}
-            placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elitd"
-          />
-          <Button>
-            Copy <LinkIcon sx={{ color: "#FFF" }} />
+          >
+            lorem ipsum
+          </Link>
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText("lorem ipsum");
+              setSnackbarOpen(true);
+            }}
+            sx={{
+              width: "54px",
+              height: "17px",
+              bgcolor: "#1D4ED8",
+              px: "8px",
+              py: "6px",
+            }}
+          >
+            <Typography sx={{ fontSize: "10px", color: "#FFF", pt: "3px" }}>
+              Copy
+            </Typography>
+            <LinkIcon
+              sx={{
+                color: "#FFF",
+                width: 15,
+                height: 15,
+                transform: "rotate(305deg)",
+              }}
+            />
           </Button>
         </Stack>
+        <Snackbar
+          sx={{ width: "250px", mx: "auto" }}
+          open={SnackbarOpen}
+          autoHideDuration={2000}
+          onClose={() => setSnackbarOpen(false)}
+          action={action}
+          message="Link copied!"
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        />
       </Stack>
     </Modal>
   );

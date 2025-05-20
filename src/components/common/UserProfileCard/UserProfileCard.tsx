@@ -11,9 +11,6 @@ const styles = {
     alignItems: "start",
     justifyContent: { xs: "space-between", sm: "flex-start" },
   },
-  userAvatar: {
-    borderRadius: "50%",
-  },
   userName: {
     fontSize: { xs: "16px", md: "18px" },
     fontWeight: { xs: 500, md: 600 },
@@ -34,6 +31,7 @@ const styles = {
 };
 
 interface UserProfileCardProps {
+  image: string;
   username: string;
   role?: string;
   date?: string;
@@ -41,21 +39,30 @@ interface UserProfileCardProps {
 }
 
 const UserProfileCard: React.FC<UserProfileCardProps> = ({
+  image,
   username,
   role,
   date,
   id,
 }) => {
   const router = useRouter();
+  console.log(image);
   return (
     <Stack sx={styles.userInfo}>
       <Stack direction="row" alignItems="center" gap={2}>
         <Image
-          src={"/images/user-image.avif"}
+          src={
+            image === "https://via.placeholder.com/150"
+              ? "/images/user-image.avif"
+              : image
+          }
           alt="user-avatar"
           width={43}
           height={43}
-          style={styles.userAvatar}
+          style={{
+            borderRadius: "50%",
+            objectFit: "cover",
+          }}
         />
         <Stack>
           <Typography

@@ -6,6 +6,7 @@ export interface User {
   name: string;
   email: string;
   address: string;
+  profileImage: string;
 }
 
 interface UserState {
@@ -48,6 +49,7 @@ const userSlice = createSlice({
           name: action.payload?.name,
           email: action.payload?.email,
           address: action.payload?.address,
+          profileImage: action.payload?.profileImage,
         };
         state.userById = transformedUser;
       })

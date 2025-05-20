@@ -72,6 +72,7 @@ const transformedAds = (ads: Ad[]): Ad[] => {
       name: ad?.user?.name,
       role: ad?.user?.role,
       id: ad?.user?.id,
+      profileImage: ad?.user?.profileImage,
     },
     createDate: ad?.createDate,
   }));

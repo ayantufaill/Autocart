@@ -63,12 +63,13 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ userId }) => {
 
         <Box sx={styles.profileImageWrapper}>
           <Image
-            src={"/images/user-image.avif"}
+            src={userById?.profileImage || "/images/user-image.avif"}
             alt="user-image"
             width={96}
             height={96}
             style={{
               borderRadius: "50%",
+              objectFit: "cover",
             }}
           />
         </Box>

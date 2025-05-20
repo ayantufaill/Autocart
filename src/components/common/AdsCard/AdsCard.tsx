@@ -127,6 +127,7 @@ const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
   return (
     <Box>
       <UserProfileCard
+        image={adData?.user?.profileImage}
         username={adData?.user?.name}
         role={adData?.user?.role}
         date={adData?.createDate}
