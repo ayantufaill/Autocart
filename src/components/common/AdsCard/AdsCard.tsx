@@ -20,11 +20,20 @@ export const getPrice = (price: number) => {
     return price + "";
   }
   if (price < 1e5) {
-    return price / 1e3 + " Thousnad";
+    return (
+      ((price / 1e3) % 1 === 0 ? price / 1e3 : (price / 1e3).toFixed(1)) +
+      " Thousnad"
+    );
   } else if (price < 1e7) {
-    return price / 1e5 + " Lacs";
+    return (
+      ((price / 1e5) % 1 === 0 ? price / 1e5 : (price / 1e5).toFixed(1)) +
+      " Lacs"
+    );
   } else if (price < 1e9) {
-    return price / 1e7 + " Crores";
+    return (
+      ((price / 1e7) % 1 === 0 ? price / 1e7 : (price / 1e7).toFixed(1)) +
+      " Crores"
+    );
   }
 };
 
@@ -74,6 +83,18 @@ const styles = {
     display: "flex",
     gap: 1,
   },
+  editWrapper: {
+    position: "absolute",
+    top: 4,
+    right: 16,
+    borderRadius: "50%",
+    bgcolor: "#2C2C2C",
+    width: 30,
+    height: 30,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 };
 
 interface AdsCardProps {
@@ -114,7 +135,6 @@ const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
 
   const copyToClipBoard = (phone: string) => {
     navigator.clipboard.writeText(phone);
-    // toast.success()
     setOpen(true);
   };
 
@@ -134,8 +154,31 @@ const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
         id={adData?.user?.id}
       />
       <Grid container sx={styles.gridContainer} spacing={4}>
-        <Grid size={{ xs: 12, md: 6 }} sx={styles.imageContainer}>
+        <Grid
+          size={{ xs: 12, md: 6 }}
+          sx={{ ...styles.imageContainer, position: "relative" }}
+        >
           <ImageGallery images={adData?.uploadImagesForAd} />
+          {typeof window !== "undefined" ? (
+            adData?.user?.id === localStorage.getItem("id") && (
+              <Box
+                sx={styles.editWrapper}
+                onClick={(e) => {
+                  e.preventDefault();
+                  router.push(`/ads/edit-ad/${adData?.id}`);
+                }}
+              >
+                <Image
+                  src={"/images/edit.svg"}
+                  alt="edit-icon"
+                  width={25}
+                  height={25}
+                />
+              </Box>
+            )
+          ) : (
+            <></>
+          )}
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>
@@ -224,6 +267,7 @@ const AdsCard: React.FC<AdsCardProps> = ({ adData }) => {
         </Grid>
       </Grid>
       <ShareAdModal
+        id={adData?.id}
         open={shareOpen}
         handleClose={() => {
           setShareOpen(false);

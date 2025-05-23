@@ -7,8 +7,15 @@ const nextConfig: NextConfig = {
 
 module.exports = {
   images: {
-    domains: ['res.cloudinary.com']
-  }
-}
+    domains: [
+      "res.cloudinary.com",
+      "images.rawpixel.com",
+      "images.pexels.com",
+      "images.rawpixel.com",
+      "images.unsplash.com",
+      "via.placeholder.com",
+    ],
+  },
+};
 
 export default nextConfig;

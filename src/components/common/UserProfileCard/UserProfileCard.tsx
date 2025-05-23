@@ -69,7 +69,10 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
             onClick={() => {
               router.push(`/account/${id}`);
             }}
-            sx={styles.userName}
+            sx={{
+              ...styles.userName,
+              fontSize: username?.length > 12 ? "15px" : "16px",
+            }}
           >
             {username}
           </Typography>

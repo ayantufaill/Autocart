@@ -11,7 +11,7 @@ export const fetchAdsApi = async (skipToken: boolean) => {
   return response.data;
 };
 
-export const postImagesApi = async (images: File[]) => {
+export const postImagesApi = async (images: File[] | string[]) => {
   const formData = new FormData();
 
   for (let i = 0; i < images.length; i++) {
@@ -43,5 +43,16 @@ export const fetchAdByIdApi = async (id: string) => {
 
 export const deleteAdByIdApi = async (id: string) => {
   const response = await api.delete(`/ads/${id}`);
+  return response.data;
+};
+
+export const updateAdByIdApi = async ({
+  id,
+  payload,
+}: {
+  id: string;
+  payload: PostAdPayload;
+}) => {
+  const response = await api.patch(`/ads/${id}`, payload);
   return response.data;
 };

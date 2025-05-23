@@ -1,4 +1,3 @@
-// import { Close } from "@mui/icons-material";
 import {
   Box,
   Divider,
@@ -10,6 +9,7 @@ import {
 
 import Image from "next/image";
 import { useRouter } from "next/router";
+// import { useState } from "react";
 
 interface AccountSidebar {
   sidebarOpen: boolean;
@@ -26,6 +26,9 @@ const AccountSidebar: React.FC<AccountSidebar> = ({
     setSidebarOpen(false);
   };
 
+  // const handleOpen = () => {
+  //   () => setSidebarOpen(true);
+  // };
   // const handleOpen = () => {
   //   () => setSidebarOpen(true);
   // };

@@ -1,10 +1,18 @@
-import React, { useState } from "react";
-import { Box, Grid, IconButton, Stack, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Grid,
+  IconButton,
+  Snackbar,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
 import ImageCarousel from "@/components/common/ImageCarousel/ImageCarousel";
 import PreviewAdImage from "@/components/common/PreviewAdImage/PreviewAdImage";
 import { Ad } from "@/types/type";
 import { getPrice } from "@/components/common/AdsCard/AdsCard";
+import { Check } from "@mui/icons-material";
 
 const styles = {
   container: {},
@@ -59,43 +67,95 @@ interface PreviewAdProps {
 }
 
 const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
+  const [previewAd, setPreviewAd] = useState<Ad | null>(null);
   const [isPreview, setIsPreview] = useState<boolean>(false);
-  const stats = [
-    { amount: adById?.likes || "0", icon: "/images/likes.svg" },
-    { amount: adById?.views || "0", icon: "/images/view-icon.svg" },
-    { amount: adById?.shares || "0", icon: "/images/share-icon.svg" },
-  ];
+  const [open, setOpen] = useState(false);
+  // const stats = [
+  //   { amount: adById?.likes || "0", icon: "/images/likes.svg" },
+  //   { amount: adById?.views || "0", icon: "/images/view-icon.svg" },
+  //   { amount: adById?.shares || "0", icon: "/images/share-icon.svg" },
+  // ];
+
+  const copyToClipBoard = (phone: string) => {
+    navigator.clipboard.writeText(phone);
+    // toast.success()
+    setOpen(true);
+  };
+
   const actions = [
-    { icon: "/images/call-icon.svg", alt: "call", color: "#EFF6FF" },
-    { icon: "/images/message.svg", alt: "message", color: "#F0FDFA" },
-    { icon: "/images/notification.svg", alt: "notification", color: "#FEF2F2" },
+    {
+      icon: "/images/call-icon.svg",
+      alt: "call",
+      color: "#EFF6FF",
+      handleClick: () =>
+        copyToClipBoard(
+          adById?.phoneNumber ||
+            (previewAd?.phoneNumber ? previewAd?.phoneNumber : "")
+        ),
+    },
+    // {
+    //   icon: "/images/message.svg",
+    //   alt: "message",
+    //   color: "#F0FDFA",
+    //   handleClick: () => {},
+    // },
+    // { icon: "/images/notification.svg", alt: "notification", color: "#FEF2F2" },
   ];
   const features = [
     {
       icon: "/images/calendar.svg",
       alt: "calender",
-      amount: adById?.yearOfProduction || "N/A",
+      amount: adById?.yearOfProduction || previewAd?.yearOfProduction || "N/A",
     },
     {
       icon: "/images/miles.svg",
       alt: "miles",
-      amount: adById?.mileage || "N/A",
+      amount: adById?.mileage || previewAd?.mileage || "N/A",
     },
     {
       icon: "/images/petrol.svg",
       alt: "petrol",
-      amount: adById?.mileageParameter || "N/A",
+      amount: adById?.mileageParameter || previewAd?.mileageParameter || "N/A",
     },
     { icon: "/images/automatic.svg", alt: "automatic", amount: "Automatic" }, // change adById?.mileageParameter || "N/A"
   ];
   const details = [
-    { label: "Make", description: adById?.commercialsMake || "---" },
-    { label: "Model", description: adById?.commercialModel || "---" },
-    { label: "Condition", description: adById?.condition || "---" }, // change
-    { label: "Load capacity", description: adById?.loadCapacity || "---" }, // change
-    { label: "Engine size", description: adById?.engineSize || "---" }, // change
-    { label: "Trim", description: adById?.commercialsMake || "---" }, // change
+    {
+      label: "Make",
+      description:
+        adById?.commercialsMake || previewAd?.commercialsMake || "---",
+    },
+    {
+      label: "Model",
+      description:
+        adById?.commercialModel || previewAd?.commercialModel || "---",
+    },
+    {
+      label: "Condition",
+      description: adById?.condition || previewAd?.status || "---",
+    }, // change
+    {
+      label: "Load capacity",
+      description: adById?.loadCapacity || previewAd?.loadCapacity || "---",
+    }, // change
+    {
+      label: "Engine size",
+      description: adById?.engineSize || previewAd?.engineSize || "---",
+    }, // change
+    {
+      label: "Trim",
+      description:
+        adById?.commercialsMake || previewAd?.commercialsMake || "---",
+    }, // change
   ];
+
+  useEffect(() => {
+    const ad = JSON.parse(localStorage.getItem("placeAd") || "{}");
+    setPreviewAd(ad);
+    if (ad?.adImages) {
+      console.log("adimages preview", ad);
+    }
+  }, []);
 
   return (
     <Box sx={styles.container}>
@@ -115,7 +175,9 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
             )
           ) : (
             <ImageCarousel
-              images={Array(4).fill("/images/car-sale-1.webp")}
+              images={
+                previewAd?.uploadImagesForAd ? previewAd?.uploadImagesForAd : []
+              }
               setIsPreview={setIsPreview}
             />
           )}
@@ -133,9 +195,14 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
             }}
           >
             <Typography sx={styles.carTitle}>{`${
-              adById?.itemName || "BMW 520 M Sport"
+              adById?.itemName ||
+              previewAd?.commercialsMake +
+                " " +
+                previewAd?.commercialModel +
+                " " +
+                previewAd?.yearOfProduction
             }`}</Typography>
-            <Stack direction="row" sx={{ gap: 2 }}>
+            {/* <Stack direction="row" sx={{ gap: 2 }}>
               {stats.map((item, index) => (
                 <Typography sx={styles.statText} key={index}>
                   <Image
@@ -147,7 +214,7 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
                   {item.amount}
                 </Typography>
               ))}
-            </Stack>
+            </Stack> */}
           </Box>
           <Typography sx={styles.locationText}>
             <Image
@@ -156,7 +223,7 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
               width={20}
               height={20}
             />
-            {adById?.location || "2614 Sweetwood Drive, Arvada, CO 80002"}
+            {adById?.location || previewAd?.location}
           </Typography>
           <Stack
             sx={{
@@ -168,8 +235,8 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
             }}
           >
             <Typography sx={styles.carPrice}>
-              <span style={{fontSize: "16px"}}>PKR </span>
-              {` ${getPrice(adById?.price || 340000)}`}
+              <span style={{ fontSize: "16px" }}>PKR </span>
+              {` ${previewAd?.price && getPrice(previewAd?.price)}`}
             </Typography>
             <Stack direction={"row"} spacing={{ xs: 2 }}>
               {actions.map((action, index) => (
@@ -177,6 +244,7 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
                   key={index}
                   size="small"
                   sx={{ bgcolor: action.color, borderRadius: 1 }}
+                  onClick={action.handleClick}
                 >
                   <Image
                     src={action.icon}
@@ -189,9 +257,7 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
             </Stack>
           </Stack>
           <Typography sx={styles.carDescription}>
-            {adById?.descriptions ||
-              `Lorem ipsum dolor sit amet 
-            consectetur. Ullamcorper imperdiet fermentum mattis ut blandit mattis pretium magna.`}
+            {adById?.descriptions || previewAd?.descriptions}
           </Typography>
           <Stack
             sx={{
@@ -253,12 +319,22 @@ const PreviewAds: React.FC<PreviewAdProps> = ({ adById }) => {
           </Grid>
         </Grid>
       </Grid>
+      <Snackbar
+        sx={{ width: "250px", mx: "auto" }}
+        open={open}
+        autoHideDuration={4000}
+        onClose={() => setOpen(false)}
+        action={
+          <Check
+            sx={{ color: "#FFF", bgcolor: "#07B007", borderRadius: "50%" }}
+          />
+        }
+        message="Phone number copied!"
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      />
       {isPreview && (
         <PreviewAdImage
-          images={
-            adById?.uploadImagesForAd ||
-            Array(4).fill("/images/car-sale-1.webp")
-          }
+          images={adById?.uploadImagesForAd || previewAd?.uploadImagesForAd}
           setIsPreview={setIsPreview}
           isPreview={isPreview}
         />

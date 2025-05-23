@@ -90,7 +90,7 @@ export interface Notification {
   userId: string;
 }
 
-export interface notificationPayload {
+export interface NotificationPayload {
   userId: string;
   content: string;
   link: string;

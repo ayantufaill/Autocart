@@ -7,12 +7,14 @@ import { Check } from "@mui/icons-material";
 import { useState } from "react";
 
 interface ShareAdModalProps {
+  id: string;
   open: boolean;
   handleClose: () => void;
   //   handleDelete: () => void;
 }
 
 const ShareAdModal: React.FC<ShareAdModalProps> = ({
+  id,
   open,
   handleClose,
   //   handleDelete,
@@ -98,18 +100,18 @@ const ShareAdModal: React.FC<ShareAdModalProps> = ({
         >
           <Link
             onClick={handleClose}
-            href={"/"}
+            href={`localhost:3000/ads/preview-ad/${id}`}
             style={{
               textDecoration: "none",
               color: "#9CA3AF",
               fontSize: "14px",
             }}
           >
-            lorem ipsum
+            {`https://autocart/ads/preview-ad/`.slice(0, 24) + "..." + `${id}`.slice(-4)}
           </Link>
           <Button
             onClick={() => {
-              navigator.clipboard.writeText("lorem ipsum");
+              navigator.clipboard.writeText(`localhost:3000/ads/preview-ad/${id}`);
               setSnackbarOpen(true);
             }}
             sx={{

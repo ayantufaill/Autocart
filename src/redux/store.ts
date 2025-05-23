@@ -4,6 +4,7 @@ import adsSlice from "./slices/adsSlice";
 import userSlice from "./slices/userSlice";
 import followerSlice from "./slices/followerSlice";
 import notificationSlice from "./slices/notificationSlice";
+import storySlice from "./slices/storySlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     user: userSlice,
     follower: followerSlice,
     notifications: notificationSlice,
+    story: storySlice,
   },
 });
 

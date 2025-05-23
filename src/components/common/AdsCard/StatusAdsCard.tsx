@@ -4,6 +4,7 @@ import { Add } from "@mui/icons-material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Ad } from "@/types/type";
 import { getPrice } from "./AdsCard";
+import { useRouter } from "next/router";
 
 interface StatusAdsCardProps {
   status?: string;
@@ -16,6 +17,8 @@ const StatusAdsCard: React.FC<StatusAdsCardProps> = ({
   isLikedAd,
   data,
 }) => {
+  const router = useRouter();
+
   return (
     <Grid size={{ xs: 6, sm: 4, md: 3 }} sx={{ position: "relative" }}>
       <Card sx={{ boxShadow: 0, border: "1px solid #9CA3AF" }}>
@@ -71,7 +74,7 @@ const StatusAdsCard: React.FC<StatusAdsCardProps> = ({
             </>
           ) : (
             <Stack direction={"row"} spacing={2}>
-              {[
+              {/* {[
                 { icon: "/images/likes.svg", count: "10" },
                 { icon: "/images/view-icon.svg", count: "23" },
                 { icon: "/images/share-icon.svg", count: "21" },
@@ -91,7 +94,7 @@ const StatusAdsCard: React.FC<StatusAdsCardProps> = ({
                     {item.count}
                   </Typography>
                 </Stack>
-              ))}
+              ))} */}
             </Stack>
           )}
         </CardContent>
@@ -105,7 +108,21 @@ const StatusAdsCard: React.FC<StatusAdsCardProps> = ({
             justifyContent: isLikedAd ? "flex-end" : "space-between",
           }}
         >
-          {/* <Image src={""} alt="" width={} height={} /> */}
+          <Image
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/ads/edit-ad/${data?.id}`);
+            }}
+            src={"/images/edit.svg"}
+            alt="edit-icon"
+            width={25}
+            height={25}
+            style={{
+              backgroundColor: "#2C2C2C",
+              borderRadius: "50%",
+              padding: "3px",
+            }}
+          />
           {/* <Box
             sx={{
               width: 20,

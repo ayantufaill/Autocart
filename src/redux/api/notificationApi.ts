@@ -1,5 +1,5 @@
 import api from "@/services/api";
-import { notificationPayload } from "@/types/type";
+import { NotificationPayload } from "@/types/type";
 
 export const fetchNotificationsApi = async () => {
   const response = await api.get("/notification");
@@ -7,7 +7,7 @@ export const fetchNotificationsApi = async () => {
 };
 
 export const postNotificationsApi = async (
-  notificationPayload: notificationPayload
+  notificationPayload: NotificationPayload
 ) => {
   const response = await api.post("/notification", notificationPayload);
   return response.data;

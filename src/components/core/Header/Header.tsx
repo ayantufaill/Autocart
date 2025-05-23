@@ -37,6 +37,7 @@ const Header = () => {
   const isAccountPage = pathname.includes("account");
   const isStoryPage = pathname === "/story";
   const isMyAdsPage = pathname === "/ads/my-ads";
+  const isEditAdPage = pathname.includes("/ads/edit-ad");
 
   const handleLogoClick = () => {
     router.push("/");
@@ -385,6 +386,33 @@ const Header = () => {
         </>
       )}
 
+      {isEditAdPage && (
+        <>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Button
+              onClick={handleBack}
+              sx={{ minWidth: "auto", color: "#111827" }}
+            >
+              <ArrowBackIosNewIcon fontSize="small" />
+            </Button>
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: "20px",
+                color: "#111827",
+                mr: 15,
+              }}
+            >
+              Edit Ad
+            </Typography>
+          </Stack>
+        </>
+      )}
+
       {/* Other Pages */}
       {!isHomePage &&
         !isPlaceAdPage &&
@@ -393,7 +421,8 @@ const Header = () => {
         !previewPostedAd &&
         !isAccountPage &&
         !isStoryPage &&
-        !isMyAdsPage && (
+        !isMyAdsPage &&
+        !isEditAdPage && (
           <>
             <Stack sx={{ flexDirection: "row", gap: 2 }}>
               <Button

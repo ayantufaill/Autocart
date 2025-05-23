@@ -11,7 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Ad } from "@/types/type";
-import { Delete } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import { deleteAdByIdThunk } from "@/redux/slices/adsSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import DeleteAdModal from "./DeleteAdModal";
@@ -27,6 +27,10 @@ const AdsTable: React.FC<AdsTableProps> = ({ ads }) => {
   const handleDeleteAd = (id: string) => {
     dispatch(deleteAdByIdThunk(id));
     setOpen(false);
+  };
+
+  const handleEditAd = (id: string) => {
+    router.push(`/ads/edit-ad/${id}`);
   };
 
   return (
@@ -54,6 +58,7 @@ const AdsTable: React.FC<AdsTableProps> = ({ ads }) => {
                 "Address",
                 "Year Of Production",
                 "Delete Ad",
+                "Edit Ad",
               ].map((header, index) => (
                 <TableCell
                   key={header}
@@ -186,6 +191,11 @@ const AdsTable: React.FC<AdsTableProps> = ({ ads }) => {
                     handleClose={() => setOpen(false)}
                     handleDelete={() => handleDeleteAd(ad?.id)}
                   />
+                </TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleEditAd(ad?.id)}>
+                    <Edit />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}

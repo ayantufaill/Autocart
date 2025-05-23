@@ -88,7 +88,7 @@ const FollowersCard: React.FC<FollowersCardProps> = ({
   image,
   name,
   isFollowing,
-  handleClick,
+  // handleClick,
 }) => {
   console.log(handleClick);
   return (

@@ -1,9 +1,18 @@
+import { Story } from "@/redux/slices/storySlice";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const Index = () => {
+interface StoryPreviewProps {
+  setIsPreview: (value: boolean) => void;
+  storyData: Story;
+}
+
+const StoryPreview: React.FC<StoryPreviewProps> = ({
+  setIsPreview,
+  storyData,
+}) => {
   const styles = {
     wrapper: {
       minHeight: "100%",
@@ -19,7 +28,7 @@ const Index = () => {
     },
     footer: {
       position: "absolute",
-      bottom: 10,
+      bottom: 40,
       width: "100%",
       justifyContent: "center",
       px: 1,
@@ -43,16 +52,17 @@ const Index = () => {
 
   const router = useRouter();
   const [progress, setProgress] = useState(0);
-  // const [hold, setHold] = useState(false);
+  const [active, setActive] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          // router.push("/story");
+          if (active >= storyData?.uploadImagesForStory?.length - 1) {
+            console.log("End of story");
+          }
           return 0;
         }
-        // if (hold) return prev;
         return prev + 1;
       });
     }, 30);
@@ -60,20 +70,23 @@ const Index = () => {
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, [setIsPreview]);
+
+  useEffect(() => {
+    if (progress >= 100) {
+      setActive((prev) => {
+        if (prev >= storyData?.uploadImagesForStory?.length - 1) {
+          setIsPreview(false);
+        }
+        return prev + 1;
+      });
+    }
+  }, [progress]);
 
   return (
-    <Box
-      sx={styles.wrapper}
-      // onMouseUp={(e) => {
-      //   e.preventDefault();
-      //   setHold(true);
-      //   console.log("Mouse hold");
-      // }}
-      onClick={() => setProgress(100)}
-    >
+    <Box sx={styles.wrapper} onClick={() => setProgress(100)}>
       <Image
-        src={"/images/car-sale-1.webp"}
+        src={storyData?.uploadImagesForStory?.[active]}
         alt="story"
         height={66}
         width={66}
@@ -84,7 +97,15 @@ const Index = () => {
         }}
       />
       <Stack sx={styles.progressWrapper} spacing={2} direction={"row"}>
-        <Progress value={progress} />
+        {Array(storyData?.uploadImagesForStory?.length)
+          .fill(1)
+          .map((_, index) => (
+            <Progress
+              key={index}
+              value={active === index ? progress : active > index ? 100 : 0}
+              width={`${100 / storyData?.uploadImagesForStory?.length}%`}
+            />
+          ))}
       </Stack>
       <Stack direction={"row"} spacing={5} sx={styles.footer}>
         <Button
@@ -105,18 +126,18 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default StoryPreview;
 
 interface ProgressProps {
   value: number;
+  width: string;
 }
 
-const Progress: React.FC<ProgressProps> = ({ value }) => {
+const Progress: React.FC<ProgressProps> = ({ value, width }) => {
   const styles = {
     wrapper: {
       height: "5px",
       borderRadius: "5px",
-      width: "100%",
       bgcolor: "#CACACA",
       position: "relative",
     },
@@ -129,7 +150,7 @@ const Progress: React.FC<ProgressProps> = ({ value }) => {
   };
 
   return (
-    <Box sx={styles.wrapper}>
+    <Box sx={{ ...styles.wrapper, width: width }}>
       <Box sx={{ ...styles.progressBackground, width: `${value}%` }} />
     </Box>
   );

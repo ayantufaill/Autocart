@@ -6,6 +6,7 @@ import {
   fetchSearchAdsApi,
   postAdApi,
   postImagesApi,
+  updateAdByIdApi,
 } from "../api/adsApi";
 import { Ad, PostAdPayload } from "@/types/type";
 import { toast } from "react-toastify";
@@ -105,7 +106,7 @@ export const fetchAdsThunk = createAsyncThunk(
 
 export const postImagesThunk = createAsyncThunk(
   "post/images",
-  async (images: File[], { rejectWithValue }) => {
+  async (images: File[] | string[], { rejectWithValue }) => {
     try {
       const response = await postImagesApi(images);
       return response;
@@ -148,6 +149,21 @@ export const deleteAdByIdThunk = createAsyncThunk(
     try {
       const response = deleteAdByIdApi(id);
       return response;
+    } catch (error: unknown) {
+      return rejectWithValue(ResolveError(error) || "Failed to delete ad. ");
+    }
+  }
+);
+
+export const updateAdByIdThunk = createAsyncThunk(
+  "update/adById",
+  async (
+    { id, payload }: { id: string; payload: PostAdPayload },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await updateAdByIdApi({ id, payload });
+      return response.data;
     } catch (error: unknown) {
       return rejectWithValue(ResolveError(error) || "Failed to delete ad. ");
     }

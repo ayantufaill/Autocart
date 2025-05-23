@@ -4,7 +4,7 @@ import {
   postNotificationsApi,
 } from "../api/notificationApi";
 import { ResolveError } from "./adsSlice";
-import { Notification, notificationPayload } from "@/types/type";
+import { Notification, NotificationPayload } from "@/types/type";
 
 interface NotificationState {
   loading: boolean;
@@ -32,7 +32,7 @@ export const FetchNotificationsThunk = createAsyncThunk(
 
 export const postNotificationThunk = createAsyncThunk(
   "post/notification",
-  async (notificationPayload: notificationPayload, { rejectWithValue }) => {
+  async (notificationPayload: NotificationPayload, { rejectWithValue }) => {
     try {
       const response = await postNotificationsApi(notificationPayload);
       return response.data;

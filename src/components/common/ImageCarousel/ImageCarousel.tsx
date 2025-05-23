@@ -24,6 +24,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
   setIsPreview,
 }) => {
   // const [activeImage, setActiveImage] = useState(0);
+  console.log("images", images);
   const settings: Settings = {
     dots: false,
     infinite: true,
@@ -43,7 +44,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
     e.stopPropagation();
     slideRef.current?.slickNext();
   };
-  const filteredImages = images.filter(
+  const filteredImages = images?.filter(
     (item) => item !== "image1.jpg" && item !== "image2.jpg"
   );
   return (
@@ -57,7 +58,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
         setIsPreview(true);
       }}
     >
-      {filteredImages.length > 1 && (
+      {filteredImages?.length > 1 && (
         <>
           <Slider ref={slideRef} {...settings}>
             {filteredImages.map((item, index) => (
@@ -68,6 +69,10 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
                   height: { xs: 200, sm: 300, md: 400, lg: 450 },
                   // height: "auto",
                   position: "relative",
+                  // backgroundImage: `url(${item})`,
+                  // backgroundSize: "cover",
+                  // backgroundPosition: "center",
+                  // backgroundRepeat: "no-repeat"
                 }}
               >
                 <Image src={item} alt={`car-${index}`} fill style={{}} />
@@ -82,7 +87,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
           </IconButton>
         </>
       )}
-      {filteredImages.length === 1 && (
+      {filteredImages?.length === 1 && (
         <Box
           sx={{
             width: "100%",
@@ -91,7 +96,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
           }}
         >
           <Image
-            src={filteredImages[0]}
+            src={filteredImages?.[0]}
             alt={`car-1`}
             fill
             style={{ objectFit: "cover" }}

@@ -32,7 +32,7 @@ const styles = {
 const Account: React.FC<AccountProps> = ({ id = "" }) => {
   const dispatch = useAppDispatch();
   const { loading, followers } = useAppSelector((state) => state.follower);
-  const { ads } = useAppSelector((state) => state.ads);
+  // const { ads } = useAppSelector((state) => state.ads);
   const isFollowing = followers.find(
     (item) => item?.followerId === localStorage.getItem("id")
   );

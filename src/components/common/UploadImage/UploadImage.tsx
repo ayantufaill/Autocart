@@ -1,12 +1,12 @@
-import { FormData } from "@/pages/ads/place-ad";
 import { AddAPhoto } from "@mui/icons-material";
 import { ImageListItem } from "@mui/material";
 import React from "react";
 import { toast } from "react-toastify";
+// import { FormData } from "../PlaceAdForm/formUtils";
 
 interface UploadImageProps {
-  formData: FormData;
-  setFormData: (data: FormData) => void;
+  images: File[];
+  setImages: (data: File[]) => void;
   id: string;
 }
 
@@ -14,26 +14,21 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 const UploadImage: React.FC<UploadImageProps> = ({
   id,
-  setFormData,
-  formData,
+  images,
+  setImages,
   // handleChange,
 }) => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target?.files?.[0];
-    if (file) {
+    if (file && images?.length < 20) {
       if (file.size > MAX_FILE_SIZE) {
         e.target.value = "";
         toast.error("File size exceeded. ");
         return;
       }
-
-      // id == "uploadStoryImage"
-      //   ? setFormData({
-      //       ...formData,
-      //       storyImages: [...formData.storyImages, file],
-      //     })
-      //   : setFormData({ ...formData, adImages: [...formData.adImages, file] });
-      setFormData({ ...formData, adImages: [...formData.adImages, file] });
+      setImages([...images, file]);
+    } else {
+      toast.error("You can only upload 20 images.");
     }
   };
 
