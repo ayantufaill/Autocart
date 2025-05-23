@@ -21,7 +21,7 @@ const ActiveAds = () => {
       <AdTabs
         tabData={[
           {
-            title: "Active (60)",
+            title: `Active (${ads?.length})`,
             isActive: true,
             color: "#07B007",
             link: "/account/active-ads",

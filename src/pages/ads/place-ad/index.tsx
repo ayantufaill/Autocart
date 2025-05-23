@@ -59,7 +59,8 @@ const VehicleForm = () => {
   ): PostAdPayload => {
     return {
       // categoryId: "e6841936-a788-45c9-af1b-5c18b4ff31a8",
-      categoryId: "09586182-8edc-4696-8ce8-f0be502e60dd",
+      // categoryId: "09586182-8edc-4696-8ce8-f0be502e60dd",
+      categoryId: "48d7ad8e-0e65-4d16-b1a5-6ac1fd7419e4",
       uploadImagesForAd: adImages,
       uploadImagesForStory: [
         "https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjEwMTMtcC0wMDE5ZC0wMS1rc2k4YjVqbi5qcGc.jpg",

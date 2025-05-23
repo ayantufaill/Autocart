@@ -66,15 +66,11 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
                 sx={{
                   width: "100%",
                   height: { xs: 200, sm: 300, md: 400, lg: 450 },
+                  // height: "auto",
                   position: "relative",
                 }}
               >
-                <Image
-                  src={item}
-                  alt={`car-${index}`}
-                  fill
-                  style={{ objectFit: "cover" }}
-                />
+                <Image src={item} alt={`car-${index}`} fill style={{}} />
               </Box>
             ))}
           </Slider>
